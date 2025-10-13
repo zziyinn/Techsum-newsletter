@@ -4,6 +4,13 @@ import os, glob, smtplib, pathlib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import os
+from dotenv import load_dotenv
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 仓库根
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUTPUT_DIR = ROOT / "output"
 
