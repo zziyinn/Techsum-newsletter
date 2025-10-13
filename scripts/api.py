@@ -3,8 +3,7 @@
 
 """
 Fetch TechSum highlights from products/affairs/innovation,
-merge and pick global top-10 by heat (feed_num),
-then render an HTML newsletter.
+merge, de-duplicate, rank, then render an HTML newsletter.
 
 Usage:
   python scripts/generate_newsletter.py \
@@ -15,18 +14,25 @@ Usage:
 
 import os
 import sys
+import re
+from pathlib import Path
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple, Optional
+from urllib.parse import urlparse, urlunparse
 
 import requests
 from dateutil import parser as dateparser
 from jinja2 import Environment, FileSystemLoader, Template
 
+# ============ 常量 ============
 API_ENDPOINTS = {
     "Products":   "https://dataserver.datasum.ai/techsum/api/v3/highlights/products",
     "Affairs":    "https://dataserver.datasum.ai/techsum/api/v3/highlights/affairs",
     "Innovation": "https://dataserver.datasum.ai/techsum/api/v3/highlights/innovation",
 }
+
+# 项目根目录（scripts 的上一级）
+ROOT_DIR = Path(__file__).resolve().parents[1]
 
 DEFAULT_INLINE_TEMPLATE = """<!DOCTYPE html>
 <html lang="zh"><head><meta charset="utf-8">
@@ -81,16 +87,19 @@ a{color:inherit;}
 </div>
 </body></html>"""
 
+# ============== utils ==============
 def safe_parse_dt(s: str):
-    from datetime import datetime, timezone
     if not s:
         return datetime(1970,1,1,tzinfo=timezone.utc)
     try:
-        return dateparser.parse(s).astimezone(timezone.utc)
+        dt = dateparser.parse(s)
+        if not dt.tzinfo:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
     except Exception:
         return datetime(1970,1,1,tzinfo=timezone.utc)
 
-def fetch_json(url: str, token: str | None) -> Any:
+def fetch_json(url: str, token: Optional[str]) -> Any:
     headers = {"accept": "application/json"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
@@ -99,6 +108,7 @@ def fetch_json(url: str, token: str | None) -> Any:
     return r.json()
 
 def normalize_items(data: Any, category: str) -> List[Dict]:
+    """把接口返回标准化为统一字段。"""
     items: List[Dict] = []
 
     def mk(v: Dict, title_key: str = "") -> Dict:
@@ -108,12 +118,14 @@ def normalize_items(data: Any, category: str) -> List[Dict]:
         date = v.get("earliest_published") or ""
         feed = v.get("feed_num", 0)
         artnum = v.get("article_num", 0)
+
         # image
         img = ""
         imgs = v.get("images") or []
         if isinstance(imgs, list) and imgs:
             img = imgs[0].get("image_link") or imgs[0].get("url") or ""
-        # link
+
+        # link（优先取第一篇文章）
         link = "#"
         arts = v.get("articles") or []
         if isinstance(arts, list) and arts:
@@ -121,14 +133,14 @@ def normalize_items(data: Any, category: str) -> List[Dict]:
 
         return {
             "category": category,
-            "title": title,
-            "summary": summary,
-            "date": date,
+            "title": str(title).strip(),
+            "summary": str(summary).strip(),
+            "date": str(date).strip(),
             "date_dt": safe_parse_dt(date),
-            "feed_num": feed,
-            "article_num": artnum,
-            "image": img,
-            "link": link,
+            "feed_num": int(feed) if str(feed).isdigit() else (feed or 0),
+            "article_num": int(artnum) if str(artnum).isdigit() else (artnum or 0),
+            "image": str(img).strip(),
+            "link": str(link).strip(),
         }
 
     if isinstance(data, list):
@@ -136,26 +148,120 @@ def normalize_items(data: Any, category: str) -> List[Dict]:
             if isinstance(v, dict):
                 items.append(mk(v))
     elif isinstance(data, dict):
+        # 可能是 dict keyed by topic；或某些 key 是 list
         for k, v in data.items():
             if isinstance(v, dict):
                 items.append(mk(v, k))
+            elif isinstance(v, list):
+                for e in v:
+                    if isinstance(e, dict):
+                        items.append(mk(e, k))
     return items
 
-def pick_top10(all_items: List[Dict]) -> List[Dict]:
-    # 排序：feed_num(desc) -> article_num(desc) -> date(desc)
-    return sorted(
-        all_items,
-        key=lambda x: (x.get("feed_num", 0), x.get("article_num", 0), x.get("date_dt")),
+# ---- 去重：规范化 URL + 标题相似 ----
+_PUNCT = re.compile(r"[^\w\s]+", flags=re.U)
+_WS = re.compile(r"\s+", flags=re.U)
+
+def normalize_title(title: str) -> str:
+    t = (title or "").strip().lower()
+    t = _PUNCT.sub(" ", t)
+    t = _WS.sub(" ", t).strip()
+    return t
+
+def canonical_url(url: str) -> str:
+    try:
+        u = urlparse(url)
+        # 去掉查询串, 标准化结尾斜杠
+        path = re.sub(r"/+$", "", u.path or "")
+        scheme = "https" if u.scheme in ("http", "https", "") else u.scheme
+        return urlunparse((scheme, u.netloc.lower(), path, "", "", ""))
+    except Exception:
+        return url
+
+def title_similarity(a: str, b: str) -> float:
+    import difflib
+    return difflib.SequenceMatcher(None, a, b).ratio()
+
+def pick_better(a: Dict, b: Dict) -> Dict:
+    # feed_num 高者优先；再比发布时间新；再比 article_num；最后保留 a
+    fa, fb = a.get("feed_num", 0) or 0, b.get("feed_num", 0) or 0
+    if fa != fb:
+        return a if fa > fb else b
+    da, db = a.get("date_dt"), b.get("date_dt")
+    if da != db:
+        return a if da > db else b
+    aa, ab = a.get("article_num", 0) or 0, b.get("article_num", 0) or 0
+    if aa != ab:
+        return a if aa > ab else b
+    return a
+
+def dedupe_items(items: List[Dict]) -> List[Dict]:
+    chosen: List[Dict] = []
+    seen: List[Tuple[str, str]] = []  # (canon_url, norm_title)
+
+    for cur in items:
+        cu = canonical_url(cur.get("link", ""))
+        ct = normalize_title(cur.get("title", ""))
+
+        dup_idx = -1
+        for idx, (u_seen, t_seen) in enumerate(seen):
+            if cu and u_seen and cu == u_seen:
+                dup_idx = idx
+                break
+            if ct and t_seen and title_similarity(ct, t_seen) >= 0.90:
+                dup_idx = idx
+                break
+
+        if dup_idx == -1:
+            chosen.append(cur)
+            seen.append((cu, ct))
+        else:
+            better = pick_better(cur, chosen[dup_idx])
+            if better is cur:
+                chosen[dup_idx] = cur
+                seen[dup_idx] = (cu, ct)
+            # 否则丢弃当前，达到“重复不出现，顺延到下一个”
+    return chosen
+
+# ---- 排序与选 TopN（优先有图） ----
+def rank_items(items: List[Dict], topk: int = 10) -> List[Dict]:
+    # 先按热度 -> 文章数 -> 时间
+    items_sorted = sorted(
+        items,
+        key=lambda x: (x.get("feed_num", 0) or 0, x.get("article_num", 0) or 0, x.get("date_dt")),
         reverse=True
-    )[:10]
+    )
+    # 优先保留有图的；不够再用无图补齐
+    with_img = [i for i in items_sorted if i.get("image")]
+    no_img  = [i for i in items_sorted if not i.get("image")]
+    merged = with_img + no_img
+    return merged[:topk]
+
+# ---- 模板加载：优先根目录，再脚本相对，最后内置 ----
+def resolve_template(template_path: str) -> Tuple[Template, bool]:
+    """
+    返回 (template_obj, using_inline)
+    优先：绝对路径 → 根目录相对路径（ROOT_DIR/…）→ 脚本相对路径（scripts/..）→ 内置模板
+    """
+    cand = Path(template_path)
+    if not cand.is_file():
+        cand_root = (ROOT_DIR / template_path).resolve()
+        if cand_root.is_file():
+            cand = cand_root
+    if not cand.is_file():
+        cand_script = (Path(__file__).resolve().parent / ".." / template_path).resolve()
+        if cand_script.is_file():
+            cand = cand_script
+
+    if cand.is_file():
+        env = Environment(loader=FileSystemLoader(str(cand.parent)))
+        return env.get_template(cand.name), False
+    else:
+        return Template(DEFAULT_INLINE_TEMPLATE), True
 
 def render_html(items: List[Dict], template_path: str) -> str:
     now = datetime.now()
-    if os.path.isfile(template_path):
-        env = Environment(loader=FileSystemLoader(os.path.dirname(template_path) or "."))
-        tpl = env.get_template(os.path.basename(template_path))
-    else:
-        tpl = Template(DEFAULT_INLINE_TEMPLATE)
+    tpl, _ = resolve_template(template_path)
     return tpl.render(
         heading="Tech Highlights (Top 10)",
         date=now.strftime("%Y-%m-%d"),
@@ -163,25 +269,35 @@ def render_html(items: List[Dict], template_path: str) -> str:
         year=now.year,
     )
 
-def ensure_dir(p: str):
-    d = os.path.dirname(p)
-    if d and not os.path.exists(d):
-        os.makedirs(d, exist_ok=True)
+# ---- 确保输出目录存在；相对路径一律相对 ROOT_DIR ----
+def normalize_outfile(p: str) -> Path:
+    out_path = Path(p)
+    if not out_path.is_absolute():
+        out_path = (ROOT_DIR / out_path).resolve()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    return out_path
 
+# ============== main ==============
 def main():
     import argparse
-    now = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # 默认输出：固定落到 根目录/output/
+    default_outfile = ROOT_DIR / "output" / f"newsletter-{today}.html"
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--token", default=os.getenv("TECHSUM_API_KEY"))
     ap.add_argument("--template", default="src/newsletter_template.html")
-    ap.add_argument("--outfile", default=f"output/newsletter-{now}.html")
+    ap.add_argument("--outfile", default=str(default_outfile))
     args = ap.parse_args()
 
+    # 抓取
     all_items: List[Dict] = []
     for cat, url in API_ENDPOINTS.items():
         try:
             raw = fetch_json(url, args.token)
-            all_items.extend(normalize_items(raw, category=cat))
+            std = normalize_items(raw, category=cat)
+            all_items.extend(std)
         except requests.HTTPError as e:
             sys.stderr.write(f"[HTTP {e.response.status_code}] {cat}: {url}\n")
         except Exception as e:
@@ -191,7 +307,9 @@ def main():
         sys.stderr.write("No items fetched from any endpoint.\n")
         sys.exit(1)
 
-    top10 = pick_top10(all_items)
+    # 去重 → 排序选 Top10
+    uniq = dedupe_items(all_items)
+    top10 = rank_items(uniq, topk=10)
 
     # 控制台预览
     for i, it in enumerate(top10, 1):
@@ -201,12 +319,13 @@ def main():
             print(f"   {it['summary']}")
         print(f"   {it['link']}\n")
 
-    # 渲染 HTML
+    # 渲染
     html = render_html(top10, args.template)
-    ensure_dir(args.outfile)
-    with open(args.outfile, "w", encoding="utf-8") as f:
-        f.write(html)
-    print(f"✅ 已生成: {args.outfile}")
+
+    # 固定写入 根目录/output/...
+    out_path = normalize_outfile(args.outfile)
+    out_path.write_text(html, encoding="utf-8")
+    print(f"✅ 已生成: {out_path}")
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,45 @@
+name: Weekly Newsletter
+
+on:
+  schedule:
+    - cron: "0 1 * * 1"   # 每周一 01:00 UTC 运行
+  workflow_dispatch: {}    # 可手动触发
+
+jobs:
+  build-and-send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate newsletter (HTML)
+        run: |
+          python scripts/api.py
+
+      - name: Send preview email
+        env:
+          SMTP_HOST: smtp.gmail.com
+          SMTP_PORT: 587
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}   # 建议 Gmail 应用专用密码
+          MAIL_TO: ${{ secrets.MAIL_TO }}         # 你的预览邮箱，逗号分隔可多人
+          MAIL_BCC: ${{ secrets.MAIL_BCC }}       # 可选
+          SUBJECT_PREFIX: ${{ secrets.SUBJECT_PREFIX }} # 可选，如 [TechSum Weekly]
+        run: |
+          python scripts/send_email.py
+
+      - name: Upload artifact (rendered HTML)
+        uses: actions/upload-artifact@v4
+        with:
+          name: newsletter-html
+          path: output/newsletter-*.html
