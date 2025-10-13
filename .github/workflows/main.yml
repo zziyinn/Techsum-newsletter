@@ -58,17 +58,11 @@ jobs:
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-          MAIL_TO:    ${{ secrets.MAIL_TO }}      # 单个或多个（逗号/分号/空格分隔）
-          MAIL_CC:    ${{ secrets.MAIL_CC }}      # 可选
-          MAIL_BCC:   ${{ secrets.MAIL_BCC }}     # 可选
+          MAIL_TO:    ${{ secrets.MAIL_TO }}
         run: |
           set -e
-          python scripts/send_email.py \
-            --file "${{ steps.pick.outputs.file }}" \
-            --subject "${{ steps.pick.outputs.subject }}" \
-            ${MAIL_TO:+--to "$MAIL_TO"} \
-            ${MAIL_CC:+--cc "$MAIL_CC"} \
-            ${MAIL_BCC:+--bcc "$MAIL_BCC"}
+          python scripts/send_email.py --file "${{ steps.pick.outputs.file }}"
+
 
       - name: Upload artifact (latest HTML)
         uses: actions/upload-artifact@v4
