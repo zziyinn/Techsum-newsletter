@@ -51,6 +51,7 @@ jobs:
       - name: Generate newsletter HTML
         env:
           TECHSUM_API_KEY: ${{ secrets.TECHSUM_API_KEY }}
+          PREHEADER: "⚡ Weekly TechSum Highlights: The Top 10 Noteworthy Tech Trends and Developments."
         run: |
           set -e
           python scripts/api.py
