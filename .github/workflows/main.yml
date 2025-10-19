@@ -30,6 +30,7 @@ on:
 jobs:
   build-and-send:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -62,9 +63,9 @@ jobs:
           if [ -z "$FILE" ]; then
             echo "No newsletter HTML found"; exit 1
           fi
-          echo "file=$FILE" >> $GITHUB_OUTPUT
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
           DATE_NY=$(TZ=America/New_York date +%Y-%m-%d)
-          echo "subject=TechSum Weekly · ${DATE_NY}" >> $GITHUB_OUTPUT
+          echo "subject=TechSum Weekly · ${DATE_NY}" >> "$GITHUB_OUTPUT"
           echo "Picked: $FILE"
 
       - name: Send newsletter (recipients from MongoDB)
@@ -73,7 +74,7 @@ jobs:
           EMAIL_PASS:  ${{ secrets.EMAIL_PASS }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           MONGODB_DB:  ${{ secrets.MONGODB_DB }}
-          MONGODB_COLL:${{ secrets.MONGODB_COLL }}
+          MONGODB_COLL: ${{ secrets.MONGODB_COLL }}
         run: |
           set -e
           TAGS="${{ github.event.inputs.tags }}"
