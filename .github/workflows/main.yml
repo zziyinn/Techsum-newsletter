@@ -2,31 +2,50 @@ name: Weekly Newsletter (build & send)
 
 on:
   schedule:
-    # 每周一 09:00 America/New_York 触发（= 13:00 UTC）
+    # 每周一 09:00 America/New_York (= 13:00 UTC)
     - cron: "0 13 * * 1"
-  workflow_dispatch: {}  # 手动触发备用
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: "Filter recipients by tags (comma-separated)"
+        required: false
+        default: "preview"
+      status:
+        description: "Recipient status"
+        required: false
+        default: "active"
+      limit:
+        description: "Max recipients (0=unlimited)"
+        required: false
+        default: "500"
+      batch_size:
+        description: "Recipients per batch"
+        required: false
+        default: "80"
+      sleep:
+        description: "Seconds between batches"
+        required: false
+        default: "4"
 
 jobs:
   build-and-send:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install deps
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
+          else
+            pip install requests jinja2 python-dateutil python-dotenv pymongo
           fi
-          # 兜底（即使没有 requirements.txt 也能运行）
-          pip install requests jinja2 python-dateutil python-dotenv
 
       - name: Generate newsletter HTML
         env:
@@ -34,35 +53,48 @@ jobs:
         run: |
           set -e
           python scripts/api.py
-          echo "Generated files:"
           ls -lt output
 
-      - name: Pick latest HTML & set subject
+      - name: Pick latest HTML & subject
         id: pick
         run: |
-          set -e
           FILE=$(ls -t output/newsletter-*.html | head -n 1)
           if [ -z "$FILE" ]; then
-            echo "No newsletter HTML found in output/"; exit 1
+            echo "No newsletter HTML found"; exit 1
           fi
           echo "file=$FILE" >> $GITHUB_OUTPUT
-
-          # 纽约时区日期作为主题尾巴
           DATE_NY=$(TZ=America/New_York date +%Y-%m-%d)
-          SUBJECT="TechSum Weekly · ${DATE_NY}"
-          echo "subject=$SUBJECT" >> $GITHUB_OUTPUT
+          echo "subject=TechSum Weekly · ${DATE_NY}" >> $GITHUB_OUTPUT
           echo "Picked: $FILE"
-          echo "Subject: $SUBJECT"
 
-      - name: Send preview email
+      - name: Send newsletter (recipients from MongoDB)
         env:
-          EMAIL_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-          MAIL_TO:    ${{ secrets.MAIL_TO }}
+          EMAIL_USER:  ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS:  ${{ secrets.EMAIL_PASS }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB:  ${{ secrets.MONGODB_DB }}
+          MONGODB_COLL:${{ secrets.MONGODB_COLL }}
         run: |
           set -e
-          python scripts/send_email.py --file "${{ steps.pick.outputs.file }}"
+          TAGS="${{ github.event.inputs.tags }}"
+          STATUS="${{ github.event.inputs.status }}"
+          LIMIT="${{ github.event.inputs.limit }}"
+          BATCH_SIZE="${{ github.event.inputs.batch_size }}"
+          SLEEP_SEC="${{ github.event.inputs.sleep }}"
 
+          # 默认值（schedule 触发时没有 inputs）
+          [ -z "$TAGS" ] && TAGS="preview"
+          [ -z "$STATUS" ] && STATUS="active"
+          [ -z "$LIMIT" ] && LIMIT="500"
+          [ -z "$BATCH_SIZE" ] && BATCH_SIZE="80"
+          [ -z "$SLEEP_SEC" ] && SLEEP_SEC="4"
+
+          python scripts/send_email.py \
+            --file "${{ steps.pick.outputs.file }}" \
+            --subject "${{ steps.pick.outputs.subject }}" \
+            --from-mongo --tags "$TAGS" --status "$STATUS" \
+            $( [ "$LIMIT" -gt 0 ] && echo --limit "$LIMIT" ) \
+            --batch-size "$BATCH_SIZE" --sleep "$SLEEP_SEC"
 
       - name: Upload artifact (latest HTML)
         uses: actions/upload-artifact@v4
