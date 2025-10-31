@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TURING PLANET ✖️ TECHSUM — Unsubscribe</title>
+<meta name="color-scheme" content="light">
+<style>
+  :root{
+    --bg:#0b0d10;
+    --card:rgba(255,255,255,.08);
+    --card-border:rgba(255,255,255,.18);
+    --text:#e8eaed;
+    --muted:#9aa0a6;
+    --accent:#0ea5e9;
+    --accent-2:#22d3ee;
+    --ok:#10b981;
+    --err:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #0a1b2e 0%, transparent 60%),
+      radial-gradient(1200px 600px at 110% 10%, #05221f 0%, transparent 60%),
+      linear-gradient(180deg, #0b0d10 0%, #0f1115 100%);
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height:1.55;
+  }
+
+  .site{min-height:100vh;display:flex;flex-direction:column}
+  .main{flex:1;display:grid;place-items:center;padding:28px 16px 44px}
+  .wrap{max-width:760px;width:100%;padding:0 24px;margin:0 auto}
+
+  .brand{
+    display:flex;justify-content:center;align-items:center;gap:.75rem;
+    margin:-8px auto 20px;text-align:center;
+  }
+  .brand h1{
+    margin:0;font-size:36px;letter-spacing:.4px;
+    background:linear-gradient(90deg,#fff 0%,#d6f3ff 40%,#9ae6ff 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  .card{
+    backdrop-filter:saturate(140%) blur(14px);
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:20px;
+    padding:26px;
+    box-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+
+  .title{font-size:28px;font-weight:800;margin:0 0 8px}
+  .subtitle{color:var(--muted);font-size:16px;margin:0 0 18px}
+
+  .form{display:grid;grid-template-columns:1fr;gap:14px}
+  .row{display:grid;grid-template-columns:1fr;gap:10px}
+  label{font-size:14px;color:#cfd4da}
+  .input,.select,.textarea{
+    width:100%;font-size:16px;padding:14px 16px;color:#e9eef4;
+    background:#0f1216;border:1px solid #2a2f36;border-radius:14px;outline:0;
+    transition:box-shadow .2s,border-color .2s;
+  }
+  .input:focus,.select:focus,.textarea:focus{
+    border-color:#2b8fff;box-shadow:0 0 0 3px rgba(14,165,233,.25)
+  }
+  .textarea{min-height:90px;resize:vertical}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;   /* ← 新增：按钮水平居中 */
+  align-items:center;       /* 可选：垂直对齐 */
+  text-align:center;        /* 兜底：老浏览器/可换行居中 */
+}
+
+  .btn{
+    border:0;border-radius:14px;padding:14px 20px;font-size:16px;font-weight:700;
+    color:#021018;background:linear-gradient(90deg,var(--accent) 0%, var(--accent-2) 100%);
+    cursor:pointer;transition:transform .06s ease,opacity .2s;
+    box-shadow:0 10px 30px rgba(14,165,233,.35)
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn.secondary{
+    background:#192028;color:#e8eaed;border:1px solid #2a2f36;box-shadow:none
+  }
+  .btn[disabled]{opacity:.6;cursor:not-allowed;box-shadow:none}
+
+  .status{margin-top:14px;font-size:14px;padding:12px 14px;border-radius:12px;display:none}
+  .status.ok{display:block;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.4);color:#b7ffd8}
+  .status.err{display:block;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.45);color:#ffc9c9}
+
+  .hint{margin-top:8px;color:var(--muted);font-size:13px}
+
+  .site-footer{
+    border-top:1px solid rgba(255,255,255,.06);
+    background:rgba(0,0,0,.25);
+    backdrop-filter:saturate(140%) blur(8px);
+    padding:14px 16px;font-size:13px;color:#aeb4bb;
+  }
+  .footer-inner{
+    max-width:1040px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .footer-right a{color:#aeb4bb;text-decoration:none}
+  .footer-right a:hover{color:#fff}
+  .footer-right .dot{margin:0 6px;color:#6d7680}
+
+  @media(max-width:760px){
+    .brand h1{font-size:28px}
+    .footer-inner{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+  <div class="site">
+    <main class="main">
+      <div class="wrap">
+        <div class="brand">
+          <h1>TURING PLANET ✖️ TECHSUM</h1>
+        </div>
+
+        <div class="card">
+          <h2 class="title"></h2>
+          <p class="subtitle">Sorry to see you go. If you don’t mind, tell us why—your feedback helps us improve.</p>
+
+          <form id="form" class="form" autocomplete="off" novalidate>
+            <div class="row">
+              <label for="email">Email</label>
+              <input id="email" class="input" type="email" inputmode="email" placeholder="your@email.com" required />
+            </div>
+
+            <div class="row">
+              <label for="reason">Reason (optional)</label>
+              <select id="reason" class="select">
+                <option value="">— Please choose —</option>
+                <option value="too-frequent">Too frequent</option>
+                <option value="not-relevant">Not relevant</option>
+                <option value="too-long">Too long</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="row" id="reasonBox" style="display:none">
+              <label for="note">Additional comments (optional)</label>
+              <textarea id="note" class="textarea" placeholder="Anything we could do better?"></textarea>
+            </div>
+
+            <!-- Honeypot (anti-bot) -->
+            <input id="website" name="website" type="text" style="position:absolute;left:-9999px;top:-9999px" tabindex="-1" autocomplete="off" />
+
+            <div class="actions">
+              <button id="submit" class="btn" type="submit">Confirm Unsubscribe</button>
+              
+            </div>
+
+            <div id="status" class="status"></div>
+            <div class="hint">Note: Unsubscribing removes this email from our mailing list. You can resubscribe anytime.</div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>© <span id="year"></span> TURING PLANET ✖️ TECHSUM</div>
+        <div class="footer-right">
+          <a href="https://www.techsum.ai" target="_blank" rel="noopener">Website</a>
+          <span class="dot">·</span>
+          <a href="mailto:info@turingplanet.org">Contact</a>
+          <span class="dot">·</span>
+          <a href="/privacy" target="_blank" rel="noopener">Privacy</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+<script>
+  // Replace with your API endpoint (Cloudflare Worker / Vercel / FastAPI / etc.)
+  // Backend should accept POST JSON: { email, token?, reason?, note? }
+  // and mark the email inactive or delete it in MongoDB.
+  const UNSUB_API_ENDPOINT = "https://<your-project>.vercel.app/api/unsubscribe"; // TODO
+
+  const $ = (sel)=>document.querySelector(sel);
+  const form = $('#form');
+  const emailI = $('#email');
+  const reasonSel = $('#reason');
+  const noteI = $('#note');
+  const reasonBox = $('#reasonBox');
+  const honeypot = $('#website');
+  const btn = $('#submit');
+  const status = $('#status');
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Prefill from URL: ?email=...&token=...
+  const params = new URLSearchParams(location.search);
+  const presetEmail = params.get('email') || '';
+  const token = params.get('token') || '';
+  if (presetEmail) emailI.value = presetEmail;
+
+  reasonSel.addEventListener('change', ()=>{
+    reasonBox.style.display = (reasonSel.value === 'other') ? 'block' : 'none';
+  });
+
+  function setStatus(type, msg){
+    status.className = 'status ' + type;
+    status.textContent = msg;
+    status.style.display = 'block';
+  }
+
+  function validateEmail(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).toLowerCase());
+  }
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    status.style.display = 'none';
+
+    const email = emailI.value.trim();
+    if (!validateEmail(email)){
+      setStatus('err','Please enter a valid email address.');
+      emailI.focus();
+      return;
+    }
+    if (honeypot.value){ // bot
+      setStatus('ok','Processed.');
+      return;
+    }
+
+    btn.disabled = true; btn.textContent = 'Submitting…';
+    try{
+      const payload = {
+        email,
+        token: token || undefined,
+        reason: reasonSel.value || undefined,
+        note: noteI.value?.trim() || undefined
+      };
+      await fetch(UNSUB_API_ENDPOINT, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ email, website })
+    });
+
+      if (res.ok){
+        setStatus('ok','You have been unsubscribed. Sorry to see you go 👋');
+        form.reset();
+        reasonBox.style.display = 'none';
+      }else{
+        const t = await res.text();
+        setStatus('err', t || 'Unsubscribe failed. Please try again later.');
+      }
+    }catch(err){
+      setStatus('err','Network error. Please try again.');
+    }finally{
+      btn.disabled = false; btn.textContent = 'Confirm Unsubscribe';
+    }
+  });
+</script>
+</body>
+</html>
