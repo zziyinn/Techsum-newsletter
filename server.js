@@ -60,12 +60,14 @@ app.get('/api/stats', async (req, res) => {
     const { getCollection } = await import('./lib/mongo.js');
     const coll = await getCollection();
     
-    const total = await coll.countDocuments({});
-    const active = await coll.countDocuments({ status: 'active' });
-    const inactive = await coll.countDocuments({ status: 'inactive' });
+    // 排除 email_lc 为 null 的旧数据
+    const total = await coll.countDocuments({ email_lc: { $ne: null } });
+    const active = await coll.countDocuments({ status: 'active', email_lc: { $ne: null } });
+    const inactive = await coll.countDocuments({ status: 'inactive', email_lc: { $ne: null } });
     
     // 获取所有订阅者（按更新时间排序）
-    const all = await coll.find({})
+    // 过滤掉 email_lc 为 null 的旧数据
+    const all = await coll.find({ email_lc: { $ne: null } })
       .sort({ updatedAt: -1, createdAt: -1 })
       .project({ _id: 0, email: 1, status: 1, tags: 1, updatedAt: 1, createdAt: 1 })
       .toArray();
@@ -101,8 +103,8 @@ app.patch('/api/subscribers/:email/tags', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Missing tag or add parameter' });
     }
     
-    // 获取当前文档
-    const doc = await coll.findOne({ email: email });
+    // 获取当前文档（使用 email_lc 查询，保持与索引一致）
+    const doc = await coll.findOne({ email_lc: email });
     if (!doc) {
       return res.status(404).json({ ok: false, error: 'Subscriber not found' });
     }
@@ -119,7 +121,7 @@ app.patch('/api/subscribers/:email/tags', async (req, res) => {
     }
     
     const result = await coll.updateOne(
-      { email: email },
+      { email_lc: email },
       { $set: { tags: newTags, updatedAt: new Date() } }
     );
     

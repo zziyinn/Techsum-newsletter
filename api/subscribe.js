@@ -33,11 +33,19 @@ export default async (req, res) => {
 
     const coll = await getCollection();
     const now = new Date();
+    const email_lc = email.toLowerCase(); // 与 Python 脚本保持一致
 
+    // 使用 email_lc 作为查询条件，因为数据库有 email_lc 的唯一索引
     const r = await coll.updateOne(
-      { email },
+      { email_lc },
       {
-        $set: { email, status: 'active', tags, updatedAt: now },
+        $set: { 
+          email, 
+          email_lc,  // 必须设置 email_lc，否则会违反唯一索引
+          status: 'active', 
+          tags, 
+          updatedAt: now 
+        },
         $setOnInsert: { createdAt: now }
       },
       { upsert: true }

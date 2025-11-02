@@ -19,7 +19,12 @@ export default async (req, res) => {
     if (!email) return res.status(400).json({ ok: false, error: 'Email required' });
 
     const coll = await getCollection();
-    const r = await coll.updateOne({ email }, { $set: { status: 'inactive', updatedAt: new Date() } });
+    const email_lc = email.toLowerCase();
+    // 使用 email_lc 作为查询条件，保持与索引一致
+    const r = await coll.updateOne(
+      { email_lc }, 
+      { $set: { status: 'inactive', updatedAt: new Date() } }
+    );
     console.log('[unsubscribe] update result:', r);
 
     return res.status(200).json({ ok: true, email });
