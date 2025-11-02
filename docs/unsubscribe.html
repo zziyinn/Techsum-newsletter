@@ -183,7 +183,7 @@
   // Replace with your API endpoint (Cloudflare Worker / Vercel / FastAPI / etc.)
   // Backend should accept POST JSON: { email, token?, reason?, note? }
   // and mark the email inactive or delete it in MongoDB.
-  const UNSUB_API_ENDPOINT = "https://<your-project>.vercel.app/api/unsubscribe"; // TODO
+  const UNSUB_API_ENDPOINT = "http://localhost:3000/api/unsubscribe";
 
   const $ = (sel)=>document.querySelector(sel);
   const form = $('#form');
@@ -240,11 +240,11 @@
         reason: reasonSel.value || undefined,
         note: noteI.value?.trim() || undefined
       };
-      await fetch(UNSUB_API_ENDPOINT, {
+      const res = await fetch(UNSUB_API_ENDPOINT, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ email, website })
-    });
+        body: JSON.stringify({ email, website: honeypot.value })
+      });
 
       if (res.ok){
         setStatus('ok','You have been unsubscribed. Sorry to see you go 👋');

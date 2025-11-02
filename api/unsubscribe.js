@@ -1,47 +1,31 @@
 // api/unsubscribe.js
-import { getCollection } from "../lib/mongo.js";
+import { getCollection } from '../lib/mongo.js';
 
-function isEmail(v) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).toLowerCase());
+function setCORS(res) {
+  const allow = process.env.CORS_ORIGIN || '*';
+  res.setHeader('Access-Control-Allow-Origin', allow);
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
-function corsHeaders(origin) {
-  const allow = process.env.CORS_ORIGIN || "";
-  const ok = origin && allow && origin.startsWith(allow);
-  return {
-    "Access-Control-Allow-Origin": ok ? origin : allow || "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "86400"
-  };
-}
-
-export default async function handler(req, res) {
-  const headers = corsHeaders(req.headers.origin || "");
-  if (req.method === "OPTIONS") {
-    return res.status(200).set(headers).end();
-  }
-  if (req.method !== "POST") {
-    return res.status(405).set(headers).json({ error: "Method Not Allowed" });
-  }
+export default async (req, res) => {
+  setCORS(res);
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
   try {
-    const { email, website } = req.body || {};
-    if (website) return res.status(200).set(headers).json({ ok: true });
-    if (!email || !isEmail(email)) {
-      return res.status(400).set(headers).json({ error: "Invalid email" });
-    }
+    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+    const email = (body.email || '').trim().toLowerCase();
+    if (!email) return res.status(400).json({ ok: false, error: 'Email required' });
 
-    const col = await getCollection();
-    const now = new Date().toISOString();
-    await col.updateOne(
-      { email: email.toLowerCase() },
-      { $set: { status: "inactive", updated_at: now } }
-    );
+    const coll = await getCollection();
+    const r = await coll.updateOne({ email }, { $set: { status: 'inactive', updatedAt: new Date() } });
+    console.log('[unsubscribe] update result:', r);
 
-    return res.status(200).set(headers).json({ ok: true });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).set(headers).json({ error: "Server error" });
+    return res.status(200).json({ ok: true, email });
+  } catch (err) {
+    console.error('[unsubscribe] error:', err);
+    const msg = process.env.VERCEL_ENV === 'production' ? 'Server Error' : String(err?.message || err);
+    return res.status(500).send(msg);
   }
-}
+};

@@ -1,8 +1,14 @@
 {
-  "name": "techsum-vercel-api",
+  "name": "techsum-newsletter",
   "private": true,
   "type": "module",
+  "scripts": {
+    "dev": "node -r dotenv/config server.js",
+    "start": "node -r dotenv/config server.js"
+  },
   "dependencies": {
-    "mongodb": "^6.8.0"
+    "dotenv": "^17.2.3",
+    "express": "^4.18.2",
+    "mongodb": "^6.20.0"
   }
 }

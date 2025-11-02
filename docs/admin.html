@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TechSum Newsletter — Subscriber Management</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 24px;
+  }
+  h1 {
+    font-size: 28px;
+    margin-bottom: 24px;
+    color: #111;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .stat-card.active { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+  .stat-card.inactive { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
+  .stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-size: 32px;
+    font-weight: bold;
+  }
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    background: #667eea;
+    color: white;
+  }
+  .btn:hover { background: #5568d3; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.secondary { background: #6b7280; }
+  .btn.secondary:hover { background: #4b5563; }
+  .btn.danger { background: #ef4444; }
+  .btn.danger:hover { background: #dc2626; }
+  .btn.success { background: #10b981; }
+  .btn.success:hover { background: #059669; }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  input[type="text"] {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    flex: 1;
+    min-width: 200px;
+  }
+  .table-wrapper {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+  }
+  th {
+    background: #f9fafb;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+  }
+  tr:hover { background: #f9fafb; }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .badge.active {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .badge.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  .tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  label {
+    user-select: none;
+  }
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  .actions {
+    display: flex;
+    gap: 6px;
+  }
+  .btn-sm {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+  }
+  .error {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+  .success {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+  .timestamp {
+    color: #6b7280;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Subscriber Management</h1>
+    
+    <div id="message"></div>
+    
+    <div class="stats" id="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Subscribers</div>
+        <div class="stat-value" id="stat-total">-</div>
+      </div>
+      <div class="stat-card active">
+        <div class="stat-label">Active</div>
+        <div class="stat-value" id="stat-active">-</div>
+      </div>
+      <div class="stat-card inactive">
+        <div class="stat-label">Inactive</div>
+        <div class="stat-value" id="stat-inactive">-</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn" onclick="loadStats()">🔄 Refresh</button>
+      <input type="text" id="search" placeholder="Search email..." oninput="filterTable()">
+      <select id="statusFilter" onchange="filterTable()" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px;">
+        <option value="">All Status</option>
+        <option value="active">Active Only</option>
+        <option value="inactive">Inactive Only</option>
+      </select>
+      <select id="tagFilter" onchange="filterTable()" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px;">
+        <option value="">All Tags</option>
+        <option value="preview">Preview</option>
+        <option value="user">User</option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <div id="loading" class="loading">Loading...</div>
+      <table id="table" style="display: none;">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Tags</th>
+            <th>Updated</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+  const API_BASE = 'http://localhost:3000/api';
+  let allSubscribers = [];
+
+  function showMessage(text, type = 'success') {
+    const msgEl = document.getElementById('message');
+    msgEl.className = type;
+    msgEl.textContent = text;
+    msgEl.style.display = 'block';
+    setTimeout(() => {
+      msgEl.style.display = 'none';
+    }, 3000);
+  }
+
+  function formatDate(d) {
+    if (!d) return '-';
+    const date = new Date(d);
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  async function loadStats() {
+    try {
+      const res = await fetch(`${API_BASE}/stats`);
+      const data = await res.json();
+      
+      if (!data.ok) throw new Error(data.error || 'Failed to load');
+
+      document.getElementById('stat-total').textContent = data.total;
+      document.getElementById('stat-active').textContent = data.active;
+      document.getElementById('stat-inactive').textContent = data.inactive;
+
+      allSubscribers = data.recent || [];
+      renderTable(allSubscribers);
+      
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('table').style.display = 'table';
+    } catch (err) {
+      showMessage(`Error: ${err.message}`, 'error');
+      document.getElementById('loading').textContent = 'Failed to load';
+    }
+  }
+
+  function renderTable(subscribers) {
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = subscribers.map(sub => {
+      const tags = sub.tags || [];
+      const hasPreview = tags.includes('preview');
+      const hasUser = tags.includes('user');
+      // 转义邮箱地址，防止 XSS 和 JavaScript 错误
+      const emailEscaped = sub.email.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      const emailHtml = sub.email.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return `
+      <tr>
+        <td>${emailHtml}</td>
+        <td><span class="badge ${sub.status}">${sub.status}</span></td>
+        <td>
+          <div class="tags" style="display: flex; gap: 8px; align-items: center;">
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="checkbox" ${hasPreview ? 'checked' : ''} 
+                     onchange="updateTags('${emailEscaped}', 'preview', this.checked)"
+                     style="cursor: pointer;">
+              <span class="tag" style="margin: 0;">preview</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="checkbox" ${hasUser ? 'checked' : ''} 
+                     onchange="updateTags('${emailEscaped}', 'user', this.checked)"
+                     style="cursor: pointer;">
+              <span class="tag" style="margin: 0;">user</span>
+            </label>
+          </div>
+        </td>
+        <td class="timestamp">${formatDate(sub.updatedAt || sub.createdAt)}</td>
+        <td>
+          <div class="actions">
+            ${sub.status === 'active' 
+              ? `<button class="btn btn-sm secondary" onclick="setStatus('${emailEscaped}', 'inactive')">Set Inactive</button>`
+              : `<button class="btn btn-sm success" onclick="setStatus('${emailEscaped}', 'active')">Set Active</button>`
+            }
+            <button class="btn btn-sm danger" onclick="removeSubscriber('${emailEscaped}')">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `;
+    }).join('');
+  }
+
+  function filterTable() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const tagFilter = document.getElementById('tagFilter').value;
+    
+    let filtered = allSubscribers.filter(sub => {
+      const matchEmail = !search || sub.email.toLowerCase().includes(search);
+      const matchStatus = !statusFilter || sub.status === statusFilter;
+      const matchTag = !tagFilter || (sub.tags || []).includes(tagFilter);
+      return matchEmail && matchStatus && matchTag;
+    });
+    
+    renderTable(filtered);
+  }
+
+  async function setStatus(email, status) {
+    if (!confirm(`Set ${email} to ${status}?`)) return;
+    
+    try {
+      const endpoint = status === 'active' ? 'subscribe' : 'unsubscribe';
+      const res = await fetch(`${API_BASE}/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      
+      const data = await res.json();
+      if (data.ok) {
+        showMessage(`Updated ${email} status`);
+        loadStats();
+      } else {
+        throw new Error(data.error || 'Operation failed');
+      }
+    } catch (err) {
+      showMessage(`Error: ${err.message}`, 'error');
+    }
+  }
+
+  async function updateTags(email, tag, add) {
+    try {
+      const res = await fetch(`${API_BASE}/subscribers/${encodeURIComponent(email)}/tags`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tag, add })
+      });
+      
+      const data = await res.json();
+      if (data.ok) {
+        showMessage(`Updated tags for ${email}`);
+        loadStats();
+      } else {
+        throw new Error(data.error || 'Update failed');
+      }
+    } catch (err) {
+      showMessage(`Error: ${err.message}`, 'error');
+    }
+  }
+
+  async function removeSubscriber(email) {
+    if (!confirm(`Delete ${email}? This action cannot be undone.`)) return;
+    
+    try {
+      const encodedEmail = encodeURIComponent(email);
+      const res = await fetch(`${API_BASE}/subscribers/${encodedEmail}`, {
+        method: 'DELETE'
+      });
+      
+      const data = await res.json();
+      if (data.ok) {
+        showMessage(`Deleted ${email}`);
+        loadStats();
+      } else {
+        throw new Error(data.error || 'Delete failed');
+      }
+    } catch (err) {
+      showMessage(`Error: ${err.message}`, 'error');
+    }
+  }
+
+  // 初始加载
+  loadStats();
+  
+  // 自动刷新（每30秒）
+  setInterval(loadStats, 30000);
+</script>
+</body>
+</html>
+

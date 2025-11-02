@@ -201,7 +201,9 @@
 
 <script>
   // 替换成你的 Cloudflare Worker 订阅接口
-  const API_ENDPOINT = "https://<your-project>.vercel.app/api/subscribe";
+  const API_ENDPOINT = "http://localhost:3000/api/subscribe";
+
+
 
   const form   = document.getElementById('form');
   const emailI = document.getElementById('email');
@@ -237,11 +239,11 @@
 
     btn.disabled = true; btn.textContent = 'Submitting…';
     try{
-    await fetch(API_ENDPOINT, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ email, website }) // 记得包含蜜罐字段
-    });
+      const res = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ email, website: botI.value }) // 记得包含蜜罐字段
+      });
       if(res.ok){
         setStatus('ok','You are in! Please check your inbox for confirmation.');
         form.reset();

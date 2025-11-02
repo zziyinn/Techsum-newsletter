@@ -1,60 +1,55 @@
 // api/subscribe.js
-import { getCollection } from "../lib/mongo.js";
+import { getCollection } from '../lib/mongo.js';
+
+function setCORS(res) {
+  const allow = process.env.CORS_ORIGIN || '*';
+  res.setHeader('Access-Control-Allow-Origin', allow);
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
 
 function isEmail(v) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).toLowerCase());
 }
 
-function corsHeaders(origin) {
-  const allow = process.env.CORS_ORIGIN || ""; // e.g. https://<user>.github.io/<repo>
-  const ok = origin && allow && origin.startsWith(allow);
-  return {
-    "Access-Control-Allow-Origin": ok ? origin : allow || "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "86400"
-  };
-}
-
-export default async function handler(req, res) {
-  const headers = corsHeaders(req.headers.origin || "");
-  if (req.method === "OPTIONS") {
-    return res.status(200).set(headers).end();
-  }
-  if (req.method !== "POST") {
-    return res.status(405).set(headers).json({ error: "Method Not Allowed" });
-  }
+export default async (req, res) => {
+  setCORS(res);
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
   try {
-    const { email, website, tags } = req.body || {};
-    // 蜜罐：机器人会填
-    if (website) return res.status(200).set(headers).json({ ok: true });
+    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+    const email = (body.email || '').trim().toLowerCase();
+    const tags  = Array.isArray(body.tags) ? body.tags : [];
 
-    if (!email || !isEmail(email)) {
-      return res.status(400).set(headers).json({ error: "Invalid email" });
+    // 蜜罐可选：body.website
+    if (body.website) {
+      console.warn('[subscribe] honeypot triggered');
+      return res.status(200).json({ ok: true, bot: true });
+    }
+    if (!isEmail(email)) {
+      return res.status(400).json({ ok: false, error: 'Invalid email' });
     }
 
-    const col = await getCollection();
-    const now = new Date().toISOString();
-    await col.updateOne(
-      { email: email.toLowerCase() },
+    const coll = await getCollection();
+    const now = new Date();
+
+    const r = await coll.updateOne(
+      { email },
       {
-        $set: {
-          email: email.toLowerCase(),
-          status: "active",
-          updated_at: now
-        },
-        $setOnInsert: {
-          created_at: now,
-          tags: Array.isArray(tags) ? tags : []
-        }
+        $set: { email, status: 'active', tags, updatedAt: now },
+        $setOnInsert: { createdAt: now }
       },
       { upsert: true }
     );
 
-    return res.status(200).set(headers).json({ ok: true });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).set(headers).json({ error: "Server error" });
+    console.log('[subscribe] upsert result:', r);
+
+    return res.status(200).json({ ok: true, email });
+  } catch (err) {
+    console.error('[subscribe] error:', err);
+    // 开发阶段给更多信息
+    const msg = process.env.VERCEL_ENV === 'production' ? 'Server Error' : String(err?.message || err);
+    return res.status(500).send(msg);
   }
-}
+};
