@@ -1,152 +1,115 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no">
   <meta name="color-scheme" content="light">
   <meta name="supported-color-schemes" content="light">
   <title>{{ title or "Tech Highlights (Top 10)" }}</title>
-  <!-- 仅极少量媒体查询，部分客户端忽略也不致崩版 -->
   <style>
-  @media only screen and (max-width:680px){
-    .container{width:100% !important; max-width:100% !important}
-    .col{display:block !important; width:100% !important; max-width:100% !important}
-    .img{width:100% !important; height:auto !important}
-    .summarybox{min-height:0 !important}
-  }
+    body,table,td,div,p,a{ -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    table{ border-collapse:collapse; }
+    img{ border:0; line-height:100%; outline:none; text-decoration:none; }
+    @media only screen and (max-width:680px){
+      .container{width:100% !important; max-width:100% !important}
+      .col{display:block !important; width:100% !important; max-width:100% !important}
+      .img{width:100% !important; height:auto !important}
+      .summarybox{min-height:0 !important}
+      .px{padding-left:16px !important; padding-right:16px !important}
+    }
   </style>
 </head>
 <body style="margin:0;padding:0;background:#f6f7f9;color:#222;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'PingFang SC','Microsoft YaHei',sans-serif;line-height:1.6;">
-  <!-- 外层 -->
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+  <div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:#f6f7f9;">
+    {{ preheader or '本周科技速览：AI / 芯片 / 互联网 / 医疗要点精粹。' }}
+  </div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr><td align="center" style="padding:24px 12px;">
-
-      <!-- 容器 680（去掉外边框与圆角） -->
-      <table role="presentation" width="680" cellpadding="0" cellspacing="0" border="0" class="container" style="width:680px;max-width:680px;border-collapse:separate;border-spacing:0;background:#ffffff;">
-
-        <!-- 顶部链接 -->
-        <tr>
-          <td style="padding:10px 16px 0 16px;text-align:center;font-size:12px;color:#6b7280;">
-            <a href="{{ view_url or 'https://www.techsum.ai' }}" target="_blank" style="color:#6b7280;text-decoration:none;">View in browser ｜ {{ view_url or 'https://www.techsum.ai' }}</a>
-          </td>
-        </tr>
-
-        <!-- Masthead -->
-        <tr>
-          <td style="padding:12px 16px 6px 16px;text-align:center;">
-            <!-- Logo：线上图片直链 + 点击跳转 support_us（48×31） -->
-            <div style="display:inline-block;width:48px;height:31px;border-radius:6px;overflow:hidden;margin:6px 0 8px 0;background:#ffffff;">
-              <a href="https://turingplanet.org/support_us/" target="_blank" style="display:block;line-height:0;text-decoration:none;">
-                <img
-                  src="{{ logo or 'https://i0.wp.com/turingplanet.org/wp-content/uploads/2022/01/turing_black_logo.png?resize=300%2C195&ssl=1' }}"
-                  alt="Turing Planet" width="48" height="31"
-                  style="display:block;border:0;width:48px;height:31px;object-fit:contain;">
-              </a>
-            </div>
-
-            <h1 style="margin:0 0 6px 0;font-size:26px;font-weight:700;color:#111;line-height:1.25;">
-              <a href="https://turingplanet.org" target="_blank" style="color:#111;text-decoration:none;">TURING PLANET</a>
-              <span style="display:inline-block;padding:0 6px;">✦</span>
-              <a href="https://www.techsum.ai/" target="_blank" style="color:#111;text-decoration:none;">TECHSUM</a>
-            </h1>
-            <div style="font-size:14px;color:#6b7280;">
-              <span>{{ tagline or 'Weekly Tech Brief' }}</span>{% if date %}<span> · </span><span>{{ date }}</span>{% endif %}
-            </div>
-            <div style="height:1px;background:#e6e8eb;margin:14px 0 0 0;"></div>
-          </td>
-        </tr>
-
-        <!-- 引言（去边框、保留内边距） -->
-        <tr>
-          <td style="padding:6px 20px 6px 20px;">
-            <div style="padding:14px 0;text-align:left;font-size:15px;color:#333;line-height:1.7;">
-              {{ intro_text or '🚀 The tech world hasn’t slowed down this week. From AI and models to chips, the internet, and healthcare, innovations are reshaping our lives in countless ways. ✨ We hope this week’s TechSum helps you capture the most noteworthy developments in just a few minutes. 💻' }}
-            </div>
-          </td>
-        </tr>
-
-        <!-- 列表：两列卡片（用 batch(2) 成行） -->
+      <table role="presentation" width="680" cellpadding="0" cellspacing="0" border="0" class="container" style="width:680px;max-width:680px;background:#ffffff;">
+        <tr><td class="px" style="padding:10px 16px 0 16px;text-align:center;font-size:12px;color:#6b7280;">
+          <a href="{{ view_url or 'https://www.techsum.ai' }}" target="_blank" style="color:#6b7280;text-decoration:none;">View in browser ｜ {{ view_url or 'https://www.techsum.ai' }}</a>
+        </td></tr>
+        <tr><td class="px" style="padding:12px 16px 6px 16px;text-align:center;">
+          <div style="display:inline-block;width:48px;height:31px;border-radius:6px;overflow:hidden;margin:6px 0 8px 0;background:#ffffff;">
+            <a href="https://turingplanet.org/support_us/" target="_blank" style="display:block;line-height:0;text-decoration:none;" aria-label="Support Turing Planet">
+              <img src="{{ logo or 'https://i0.wp.com/turingplanet.org/wp-content/uploads/2022/01/turing_black_logo.png?resize=300%2C195&ssl=1' }}" alt="Turing Planet" width="48" height="31" style="display:block;width:48px;height:31px;object-fit:contain;">
+            </a>
+          </div>
+          <h1 style="margin:0 0 6px 0;font-size:26px;font-weight:700;color:#111;line-height:1.25;">
+            <a href="https://turingplanet.org" target="_blank" style="color:#111;text-decoration:none;">TURING PLANET</a>
+            <span style="display:inline-block;padding:0 6px;">✦</span>
+            <a href="https://www.techsum.ai/" target="_blank" style="color:#111;text-decoration:none;">TECHSUM</a>
+          </h1>
+          <div style="font-size:14px;color:#6b7280;">
+            <span>{{ tagline or 'Weekly Tech Brief' }}</span>{% if date %}<span> · </span><span>{{ date }}</span>{% endif %}
+          </div>
+          <div style="height:1px;background:#e6e8eb;margin:14px 0 0 0;"></div>
+        </td></tr>
+        <tr><td class="px" style="padding:6px 20px 6px 20px;">
+          <div style="padding:14px 0;text-align:left;font-size:15px;color:#333;line-height:1.7;">
+            {{ intro_text or '🚀 The tech world hasn’t slowed down this week. From AI and models to chips, the internet, and healthcare, innovations are reshaping our lives in countless ways. ✨ We hope this week’s TechSum helps you capture the most noteworthy developments in just a few minutes. 💻' }}
+          </div>
+        </td></tr>
         {% for row in items|batch(2, fill_with=None) %}
-        <tr>
-          <td style="padding:18px 24px 0 24px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-              <tr>
-                {% for it in row %}
-                <td class="col" valign="top" width="50%" style="width:50%;max-width:50%;padding:0 6px;">
-                  {% if it %}
-                  <!-- 卡片（保留卡片自身边框以分组内容） -->
-                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"style="border-collapse:separate;border-spacing:0;background:#fff;border:none;border-radius:14px;overflow:hidden;">
-
-                    <!-- 图 -->
-                    <tr>
-                      <td style="padding:0;background:#eef2f7;">
-                        {% if it.image and it.image.strip() %}
-                        <a href="{{ it.link or '#' }}" target="_blank" style="display:block;line-height:0;text-decoration:none;">
-                          <img src="{{ it.image }}" alt="{{ it.title|e }}" width="320" height="180" class="img"
-                               style="display:block;width:320px;height:180px;border:0;object-fit:cover;">
-                        </a>
-                        {% else %}
-                        <div style="display:block;width:320px;height:180px;background:#f0f2f5;"></div>
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <!-- 文 -->
-                    <tr>
-                      <td style="padding:12px 14px 14px 14px;">
-                        <!-- 标题 -->
-                        <a href="{{ it.link or '#' }}" target="_blank"
-                           style="color:#0b57d0;text-decoration:none;font-weight:700;font-size:16px;line-height:1.4;display:block;margin:0 0 6px 0;">
-                          {{ it.title }}
-                        </a>
-                        <!-- 元信息 + 黑色热度徽标 -->
-                        <div style="font-size:12px;color:#6b7280;margin:0 0 10px 0;">
-                          {% if it.date %}<span>{{ it.date.split(' ')[0] }}</span> · {% endif %}
-                          <span style="display:inline-block;background:#fff;color:#000000;font-weight:600;font-size:11px;line-height:1;border-radius:4px;padding:2px 6px;vertical-align:middle;">
-                            🔥 {{ it.feed_num }}
-                          </span>
-                          {% if it.category %} · <span style="font-weight:600;opacity:.8">{{ it.category }}</span>{% endif %}
-                        </div>
-                        <!-- 摘要：min-height“补高”，同排两卡底部对齐；移动端自动取消 -->
-                        {% if it.summary %}
-                        <div class="summarybox"
-                             style="font-size:14px;color:#333;line-height:1.6;margin:0;min-height:96px;">
-                          {{ it.summary }}
-                        </div>
-                        {% else %}
-                        <div class="summarybox" style="min-height:32px;"></div>
-                        {% endif %}
-                      </td>
-                    </tr>
-                  </table>
-                  {% endif %}
-                </td>
-                {% endfor %}
-              </tr>
-            </table>
-          </td>
-        </tr>
+        <tr><td class="px" style="padding:18px 24px 0 24px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              {% for it in row %}
+              <td class="col" valign="top" width="50%" style="width:50%;max-width:50%;padding:0 6px;">
+                {% if it %}
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fff;border:none;border-radius:14px;overflow:hidden;">
+                  <tr><td style="padding:0;background:#eef2f7;">
+                    {% if it.image and it.image.strip() %}
+                    <a href="{{ it.link or '#' }}" target="_blank" style="display:block;line-height:0;text-decoration:none;" aria-label="{{ it.title|e }}">
+                      <img src="{{ it.image }}" alt="{{ it.title|e }}" width="320" height="180" class="img" style="display:block;width:320px;height:180px;object-fit:cover;">
+                    </a>
+                    {% else %}<div style="display:block;width:320px;height:180px;background:#f0f2f5;"></div>{% endif %}
+                  </td></tr>
+                  <tr><td style="padding:12px 14px 14px 14px;">
+                    <a href="{{ it.link or '#' }}" target="_blank" style="color:#0b57d0;text-decoration:none;font-weight:700;font-size:16px;line-height:1.4;display:block;margin:0 0 6px 0;">{{ it.title }}</a>
+                    <div style="font-size:12px;color:#6b7280;margin:0 0 10px 0;">
+                      {% if it.date %}<span>{{ it.date.split(' ')[0] }}</span> · {% endif %}
+                      <span style="display:inline-block;background:#fff;color:#000;font-weight:600;font-size:11px;line-height:1;border-radius:4px;padding:2px 6px;vertical-align:middle;">🔥 {{ it.feed_num }}</span>
+                      {% if it.category %} · <span style="font-weight:600;opacity:.8">{{ it.category }}</span>{% endif %}
+                    </div>
+                    {% if it.summary %}<div class="summarybox" style="font-size:14px;color:#333;line-height:1.6;margin:0;min-height:96px;">{{ it.summary }}</div>{% else %}<div class="summarybox" style="min-height:32px;"></div>{% endif %}
+                  </td></tr>
+                </table>
+                {% endif %}
+              </td>
+              {% endfor %}
+            </tr>
+          </table>
+        </td></tr>
         {% endfor %}
-
-        <!-- 结尾（结构修正） -->
-        <tr>
-          <td style="padding:16px 20px 0 20px;">
-              <tr><td style="padding:18px 16px;text-align:center;">
-                <div style="font-size:15px;color:#333;line-height:1.6;margin:0 0 6px 0;">{{ outro_text_1 or 'Thank you for reading.' }}</div>
-                <div style="font-size:15px;color:#333;line-height:1.6;margin:0 0 6px 0;">{{ outro_text_2 or 'May everyone who cares about technology find their own place in this wave.' }}</div>
-                <div style="font-size:15px;color:#333;line-height:1.6;margin:0;">{{ outro_text_3 or 'See you next week—wishing you all the best!' }}</div>
-                <div style="height:10px;line-height:10px;font-size:0;">&nbsp;</div>
-
-
-                <div style="margin-top:14px;font-size:14px;color:#444;line-height:1.6;">
-                  <div><strong>{{ team_name or 'TECHSUM TEAM' }}</strong></div>
-                  <div>Email: <a href="mailto:{{ team_email or 'info@turingplanet.org' }}" style="color:#0b57d0;text-decoration:none;">{{ team_email or 'info@turingplanet.org' }}</a></div>
-                  <div>Website: <a href="{{ team_site or 'https://www.techsum.ai/' }}" target="_blank" style="color:#0b57d0;text-decoration:none;">{{ team_site or 'techsum.ai' }}</a></div>
-                </div>
-
-                <div style="margin-top:16px;font-size:12px;color:#777;line-height:1.5;border-top:1px solid #eee;padding-top:12px;font-style:italic;text-align:left;">
-                  The information transmitted in this email is intended solely for the use of the named recipient(s) and may contain confidential or privileged material. Any review, forwarding, dissemination, or other use of this information by anyone other than the intended recipient(s) is prohibited, as is any action taken based on it. If you have received this email in error, please contact the sender and delete it from all computers.
-                </div>
-              </td></tr>
-            </table>
-          </td>
-        </tr>
+        <tr><td class="px" style="padding:16px 20px 0 20px;">
+          <div style="padding:18px 16px;text-align:center;">
+            <div style="font-size:15px;color:#333;line-height:1.6;margin:0 0 6px 0;">{{ outro_text_1 or 'Thank you for reading.' }}</div>
+            <div style="font-size:15px;color:#333;line-height:1.6;margin:0 0 6px 0;">{{ outro_text_2 or 'May everyone who cares about technology find their own place in this wave.' }}</div>
+            <div style="font-size:15px;color:#333;line-height:1.6;margin:0;">{{ outro_text_3 or 'See you next week—wishing you all the best!' }}</div>
+            <div style="height:10px;line-height:10px;font-size:0;">&nbsp;</div>
+            <div style="margin-top:14px;font-size:14px;color:#444;line-height:1.6;">
+              <div><strong>{{ team_name or 'TECHSUM TEAM' }}</strong></div>
+              <div>Email: <a href="mailto:{{ team_email or 'info@turingplanet.org' }}" style="color:#0b57d0;text-decoration:none;">{{ team_email or 'info@turingplanet.org' }}</a></div>
+              <div>Website: <a href="{{ team_site or 'https://www.techsum.ai/' }}" target="_blank" style="color:#0b57d0;text-decoration:none;">{{ team_site or 'techsum.ai' }}</a></div>
+            </div>
+            <div style="margin-top:16px;text-align:center;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:auto;">
+                <tr><td align="center" bgcolor="#111111" style="border-radius:999px;">
+                  <a href="docs/unsubscribe.html" target="_blank" style="display:inline-block;padding:10px 18px;font-size:13px;line-height:1.2;color:#fff;text-decoration:none;font-weight:600;">Unsubscribe</a>
+                </td></tr>
+              </table>
+            </div>
+            <!-- 法律提示 -->
+            <div style="margin-top:16px;font-size:12px;color:#777;line-height:1.5;border-top:1px solid #eee;padding-top:12px;text-align:left;font-style:italic;">
+              The information transmitted in this email is intended solely for the use of the named recipient(s) and may contain confidential or privileged material. Any review, forwarding, dissemination, or other use of this information by anyone other than the intended recipient(s) is prohibited, as is any action taken based on it. If you have received this email in error, please contact the sender and delete it from all computers.
+            </div>
+          </div>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
