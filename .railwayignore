@@ -1,0 +1,5 @@
+# 忽略 Python 文件，避免 Railpack 误检测为 Python 项目
+scripts/
+src/utils.py
+requirements.txt
+

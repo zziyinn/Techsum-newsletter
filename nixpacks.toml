@@ -1,0 +1,11 @@
+# Nixpacks configuration for Railway
+# 明确指定这是 Node.js 项目
+[phases.setup]
+nixPkgs = ["nodejs-18_x", "npm"]
+
+[phases.install]
+cmds = ["npm install"]
+
+[start]
+cmd = "npm start"
+
