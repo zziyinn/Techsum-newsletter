@@ -267,7 +267,8 @@ def render_html(items: List[Dict], template_path: str) -> str:
         date=now.strftime("%Y-%m-%d"),
         items=items,
         year=now.year,
-        preheader=os.getenv("PREHEADER", "⚡ Weekly TechSum Highlights: The Top 10 Noteworthy Tech Trends and Developments.")
+        preheader=os.getenv("PREHEADER", "⚡ Weekly TechSum Highlights: The Top 10 Noteworthy Tech Trends and Developments."),
+        unsub_url=os.getenv("UNSUB_URL", "https://web-production-914f7.up.railway.app/unsubscribe.html")
     )
 
 # ---- 确保输出目录存在；相对路径一律相对 ROOT_DIR ----
