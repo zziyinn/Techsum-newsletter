@@ -13,14 +13,26 @@ A newsletter system that fetches tech highlights, generates HTML newsletters, an
 - 💾 **MongoDB Integration**: Store and manage subscribers in MongoDB Atlas
 - 🏷️ **Tag System**: Organize subscribers with tags (preview, user, etc.)
 
+## Deployment
+
+### Railway Deployment
+
+🚀 **完整部署指南**: 查看 [DEPLOYMENT.md](./DEPLOYMENT.md) 获取详细的 Railway 部署步骤。
+
+**快速部署：**
+1. 在 Railway 创建项目并连接 GitHub 仓库
+2. 配置环境变量：`MONGODB_URI`, `MONGODB_DB`, `MONGODB_COLL`
+3. Railway 会自动部署（已配置 `railway.json` 和 `Procfile`）
+4. 获取部署 URL 并测试 API
+
 ## Local Deployment
 
 ### 1. Environment Setup
 
-Copy `env.example` to `.env` and fill in your configuration:
+Copy `.env.example` to `.env` and fill in your configuration:
 
 ```bash
-cp env.example .env
+cp .env.example .env
 ```
 
 Required environment variables:
@@ -38,7 +50,7 @@ Required environment variables:
 npm install
 
 # Python dependencies (newsletter generation & sending)
-pip install -r requirements.txt
+pip install -r scripts/requirements.txt
 ```
 
 ### 3. Start Local Server
@@ -135,7 +147,8 @@ python scripts/subscribers.py list --status active --tags preview
 │   └── subscribers.py    # MongoDB subscriber management CLI
 ├── server.js             # Express server for local development
 ├── package.json          # Node.js dependencies
-└── requirements.txt      # Python dependencies
+├── Procfile              # Railway deployment configuration
+└── railway.json          # Railway build configuration
 ```
 
 ## Tech Stack

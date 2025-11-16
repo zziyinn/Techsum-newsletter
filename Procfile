@@ -1,2 +1,2 @@
-web: node -r dotenv/config server.js
+web: node server.js
 
