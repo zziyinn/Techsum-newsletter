@@ -49,6 +49,18 @@ app.all('/api/unsubscribe', async (req, res) => {
   }
 });
 
+// CORS 中间件
+app.use('/api', (req, res, next) => {
+  const allow = process.env.CORS_ORIGIN || '*';
+  res.setHeader('Access-Control-Allow-Origin', allow);
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+  next();
+});
+
 // 健康检查
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, timestamp: new Date().toISOString() });
