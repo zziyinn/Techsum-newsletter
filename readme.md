@@ -181,7 +181,8 @@ pip install -r scripts/requirements.txt
 
 ```bash
 # MongoDB 配置
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
+# 从 MongoDB Atlas 获取连接字符串（在 MongoDB Atlas Dashboard 中获取）
+MONGODB_URI=your_mongodb_connection_string_here
 MONGODB_DB=techsum
 MONGODB_COLL=subscribers
 
@@ -201,6 +202,11 @@ SESSION_SECRET=your_random_session_secret_key
 PORT=3000
 CORS_ORIGIN=*
 ```
+
+**⚠️ 安全提示**: 
+- 不要将真实的凭据提交到 Git 仓库
+- 所有敏感信息应存储在 `.env` 文件中（已在 `.gitignore` 中）
+- 生产环境请在 Railway 环境变量中配置，不要使用默认值
 
 **Gmail App Password 获取方法**:
 1. 登录 Google 账户
