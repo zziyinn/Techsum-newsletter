@@ -108,10 +108,6 @@ If not set, default username is `admin`, password is `admin123` (**for developme
 
 ### 4. Admin Dashboard
 
-**URL**: 
-- Production: [https://web-production-914f7.up.railway.app/admin.html](https://web-production-914f7.up.railway.app/admin.html)
-- Local: `http://localhost:3000/admin.html`
-
 **Security**: 
 - Requires login to access
 - Unauthenticated users are automatically redirected to login page
