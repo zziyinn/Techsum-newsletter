@@ -2,253 +2,253 @@
 
 ⚡ **Your weekly TechSum**: the most noteworthy tech stories — quick and clear.
 
-一个现代化的技术新闻通讯订阅系统，支持订阅管理、邮件发送和后台管理。
+A modern newsletter subscription system with subscription management, email sending, and admin dashboard.
 
-**🌐 在线地址**: [https://web-production-914f7.up.railway.app/](https://web-production-914f7.up.railway.app/)
-
----
-
-## 📋 目录
-
-- [功能特性](#功能特性)
-- [页面说明](#页面说明)
-- [快速开始](#快速开始)
-- [部署指南](#部署指南)
-- [API 文档](#api-文档)
-- [项目结构](#项目结构)
-- [技术栈](#技术栈)
+**🌐 Live URL**: [https://web-production-914f7.up.railway.app/](https://web-production-914f7.up.railway.app/)
 
 ---
 
-## ✨ 功能特性
+## 📋 Table of Contents
 
-- 📧 **新闻通讯生成**: 从多个来源获取技术亮点，生成精美的 HTML 新闻通讯
-- 📬 **邮件发送**: 通过 Gmail 批量发送邮件，支持 MongoDB 订阅者管理
-- 🌐 **Web 界面**: 
-  - 订阅页面 - 用户注册订阅
-  - 取消订阅页面 - 用户取消订阅
-  - 后台管理面板 - 订阅者管理
-- 💾 **MongoDB 集成**: 在 MongoDB Atlas 中存储和管理订阅者
-- 🏷️ **标签系统**: 使用标签组织订阅者（preview、user 等）
-- 🛡️ **反垃圾邮件**: 内置蜜罐（honeypot）机制防止机器人注册
-- 📊 **实时统计**: 后台管理面板显示订阅者统计数据
-- 🔐 **管理员认证**: 登录系统保护后台管理面板
-- ✉️ **确认邮件**: 新订阅者自动收到欢迎确认邮件
-- 📁 **周刊存档**: 每期周刊自动保存到 `output/` 文件夹，文件名格式为 `newsletter-YYYY-MM-DD.html`
+- [Features](#-features)
+- [Pages](#-pages)
+- [Quick Start](#-quick-start)
+- [Deployment Guide](#-deployment-guide)
+- [API Documentation](#-api-documentation)
+- [Project Structure](#-project-structure)
+- [Tech Stack](#-tech-stack)
 
 ---
 
-## 📄 页面说明
+## ✨ Features
 
-### 1. 订阅页面 (Subscribe)
-
-**访问地址**: 
-- 生产环境: [https://web-production-914f7.up.railway.app/](https://web-production-914f7.up.railway.app/)
-- 本地开发: `http://localhost:3000/`
-
-**功能**:
-- 用户输入邮箱地址订阅新闻通讯
-- 实时表单验证
-- 防机器人注册（蜜罐机制）
-- 响应式设计，支持移动端
-- **自动发送确认邮件**: 订阅成功后，系统会立即发送欢迎邮件给新订阅者
-
-**特性**:
-- 🚀 AI 筛选，来自 30+ 顶级发布商
-- 🧭 可操作的摘要，几分钟内完成阅读
-- 🛡️ 隐私保护，不共享数据
-- ✉️ 订阅后立即收到欢迎确认邮件
+- 📧 **Newsletter Generation**: Fetch tech highlights from multiple sources and generate beautiful HTML newsletters
+- 📬 **Email Sending**: Batch email sending via Gmail with MongoDB subscriber management
+- 🌐 **Web Interface**: 
+  - Subscribe page - User registration
+  - Unsubscribe page - User opt-out
+  - Admin dashboard - Subscriber management
+- 💾 **MongoDB Integration**: Store and manage subscribers in MongoDB Atlas
+- 🏷️ **Tag System**: Organize subscribers with tags (preview, user, etc.)
+- 🛡️ **Anti-Spam**: Built-in honeypot mechanism to prevent bot registration
+- 📊 **Real-time Statistics**: Admin dashboard displays subscriber statistics
+- 🔐 **Admin Authentication**: Login system to protect admin panel
+- ✉️ **Confirmation Email**: New subscribers automatically receive welcome confirmation emails
+- 📁 **Newsletter Archive**: Each newsletter is automatically saved to `output/` folder with filename format `newsletter-YYYY-MM-DD.html`
 
 ---
 
-### 2. 取消订阅页面 (Unsubscribe)
+## 📄 Pages
 
-**访问地址**: 
-- 生产环境: [https://web-production-914f7.up.railway.app/unsubscribe.html](https://web-production-914f7.up.railway.app/unsubscribe.html)
-- 本地开发: `http://localhost:3000/unsubscribe.html`
+### 1. Subscribe Page
 
-**功能**:
-- 用户输入邮箱取消订阅
-- 可选原因选择（太频繁、不相关、太长、其他）
-- 可选反馈意见
-- 支持 URL 参数预填充邮箱（`?email=xxx`）
+**URL**: 
+- Production: [https://web-production-914f7.up.railway.app/](https://web-production-914f7.up.railway.app/)
+- Local: `http://localhost:3000/`
 
-**取消订阅流程**:
-1. 用户输入邮箱地址
-2. 选择取消原因（可选）
-3. 填写额外反馈（可选）
-4. 确认取消订阅
-5. 系统将订阅者状态设置为 `inactive`
+**Features**:
+- Users enter email address to subscribe
+- Real-time form validation
+- Anti-bot registration (honeypot mechanism)
+- Responsive design, mobile-friendly
+- **Automatic confirmation email**: After successful subscription, the system immediately sends a welcome email to new subscribers
+
+**Highlights**:
+- 🚀 AI-filtered from 30+ top publishers
+- 🧭 Actionable summaries in minutes
+- 🛡️ Private & secure — no sharing
+- ✉️ Receive welcome confirmation email immediately after subscription
 
 ---
 
-### 3. 登录页面 (Login)
+### 2. Unsubscribe Page
 
-**访问地址**: 
-- 生产环境: [https://web-production-914f7.up.railway.app/login.html](https://web-production-914f7.up.railway.app/login.html)
-- 本地开发: `http://localhost:3000/login.html`
+**URL**: 
+- Production: [https://web-production-914f7.up.railway.app/unsubscribe.html](https://web-production-914f7.up.railway.app/unsubscribe.html)
+- Local: `http://localhost:3000/unsubscribe.html`
 
-**功能**:
-- 管理员登录认证
-- 使用环境变量配置的用户名和密码
-- Session 管理，登录状态保持 24 小时
-- 未登录用户访问 admin 页面会自动重定向到登录页
+**Features**:
+- Users enter email to unsubscribe
+- Optional reason selection (too frequent, not relevant, too long, other)
+- Optional feedback
+- Supports URL parameter to prefill email (`?email=xxx`)
 
-**配置**:
-在 `.env` 文件中设置：
+**Unsubscribe Process**:
+1. User enters email address
+2. Select cancellation reason (optional)
+3. Fill in additional feedback (optional)
+4. Confirm unsubscribe
+5. System sets subscriber status to `inactive`
+
+---
+
+### 3. Login Page
+
+**URL**: 
+- Production: [https://web-production-914f7.up.railway.app/login.html](https://web-production-914f7.up.railway.app/login.html)
+- Local: `http://localhost:3000/login.html`
+
+**Features**:
+- Admin login authentication
+- Username and password configured via environment variables
+- Session management, login status maintained for 24 hours
+- Unauthenticated users accessing admin page are automatically redirected to login page
+
+**Configuration**:
+Set in `.env` file:
 ```bash
 ADMIN_USERNAME=your_admin_username
 ADMIN_PASSWORD=your_secure_password
 SESSION_SECRET=your_session_secret_key
 ```
 
-如果不设置，默认用户名为 `admin`，密码为 `admin123`（**仅用于开发环境，生产环境请务必修改**）
+If not set, default username is `admin`, password is `admin123` (**for development only, must change in production**)
 
 ---
 
-### 4. 后台管理面板 (Admin Dashboard)
+### 4. Admin Dashboard
 
-**访问地址**: 
-- 生产环境: [https://web-production-914f7.up.railway.app/admin.html](https://web-production-914f7.up.railway.app/admin.html)
-- 本地开发: `http://localhost:3000/admin.html`
+**URL**: 
+- Production: [https://web-production-914f7.up.railway.app/admin.html](https://web-production-914f7.up.railway.app/admin.html)
+- Local: `http://localhost:3000/admin.html`
 
-**安全**: 
-- 需要登录才能访问
-- 未登录用户会自动重定向到登录页面
-- 支持登出功能
+**Security**: 
+- Requires login to access
+- Unauthenticated users are automatically redirected to login page
+- Supports logout functionality
 
-**功能**:
+**Features**:
 
-#### 📊 统计面板
-- **总订阅者数**: 显示所有订阅者总数
-- **活跃订阅者**: 状态为 `active` 的订阅者数量
-- **非活跃订阅者**: 状态为 `inactive` 的订阅者数量
+#### 📊 Statistics Panel
+- **Total Subscribers**: Shows total number of all subscribers
+- **Active Subscribers**: Number of subscribers with `active` status
+- **Inactive Subscribers**: Number of subscribers with `inactive` status
 
-#### 🔍 搜索和筛选
-- **邮箱搜索**: 实时搜索订阅者邮箱
-- **状态筛选**: 按 `active` / `inactive` 筛选
-- **标签筛选**: 按 `preview` / `user` 标签筛选
+#### 🔍 Search and Filter
+- **Email Search**: Real-time search by subscriber email
+- **Status Filter**: Filter by `active` / `inactive`
+- **Tag Filter**: Filter by `preview` / `user` tags
 
-#### ✏️ 订阅者管理
-- **编辑标签**: 
-  - 勾选/取消 `preview` 标签
-  - 勾选/取消 `user` 标签
-- **更新状态**: 
-  - 将订阅者设置为 `active` 或 `inactive`
-- **删除订阅者**: 永久删除订阅者记录
+#### ✏️ Subscriber Management
+- **Edit Tags**: 
+  - Check/uncheck `preview` tag
+  - Check/uncheck `user` tag
+- **Update Status**: 
+  - Set subscriber to `active` or `inactive`
+- **Delete Subscriber**: Permanently delete subscriber record
 
-#### 🔄 自动刷新
-- 每 30 秒自动刷新数据
-- 手动刷新按钮
+#### 🔄 Auto Refresh
+- Automatically refreshes data every 30 seconds
+- Manual refresh button
 
-**使用场景**:
-- 管理订阅者列表
-- 批量标记预览用户
-- 处理取消订阅请求
-- 查看订阅者统计信息
+**Use Cases**:
+- Manage subscriber list
+- Batch mark preview users
+- Handle unsubscribe requests
+- View subscriber statistics
 
 ---
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 环境要求
+### Requirements
 
-- Node.js 18.x 或更高版本
+- Node.js 18.x or higher
 - npm >= 9.0.0
-- Python 3.x（用于新闻通讯生成和邮件发送）
-- MongoDB Atlas 账户
+- Python 3.x (for newsletter generation and email sending)
+- MongoDB Atlas account
 
-### 1. 克隆项目
+### 1. Clone Repository
 
 ```bash
 git clone <repository-url>
 cd Techsum-newsletter
 ```
 
-### 2. 安装依赖
+### 2. Install Dependencies
 
 ```bash
-# Node.js 依赖（API 服务器）
+# Node.js dependencies (API server)
 npm install
 
-# Python 依赖（新闻通讯生成和发送）
+# Python dependencies (newsletter generation & sending)
 pip install -r scripts/requirements.txt
 ```
 
-### 3. 配置环境变量
+### 3. Configure Environment Variables
 
-创建 `.env` 文件（参考 `.env.example`）：
+Create `.env` file (refer to `.env.example`):
 
 ```bash
-# MongoDB 配置
-# 从 MongoDB Atlas 获取连接字符串（在 MongoDB Atlas Dashboard 中获取）
+# MongoDB Configuration
+# Get connection string from MongoDB Atlas Dashboard
 MONGODB_URI=your_mongodb_connection_string_here
 MONGODB_DB=techsum
 MONGODB_COLL=subscribers
 
-# Gmail 配置（用于发送邮件）
+# Gmail Configuration (for sending emails)
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-app-password
 
-# TechSum API（可选，用于获取新闻亮点）
+# TechSum API (optional, for fetching tech highlights)
 TECHSUM_API_KEY=your-api-key
 
-# 管理员认证配置
+# Admin Authentication Configuration
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=your_secure_password
 SESSION_SECRET=your_random_session_secret_key
 
-# 服务器配置
+# Server Configuration
 PORT=3000
 CORS_ORIGIN=*
 ```
 
-**⚠️ 安全提示**: 
-- 不要将真实的凭据提交到 Git 仓库
-- 所有敏感信息应存储在 `.env` 文件中（已在 `.gitignore` 中）
-- 生产环境请在 Railway 环境变量中配置，不要使用默认值
+**⚠️ Security Notes**: 
+- Do not commit real credentials to Git repository
+- All sensitive information should be stored in `.env` file (already in `.gitignore`)
+- For production, configure in Railway environment variables, do not use default values
 
-**Gmail App Password 获取方法**:
-1. 登录 Google 账户
-2. 启用两步验证
-3. 访问 [App Passwords](https://myaccount.google.com/apppasswords)
-4. 生成应用专用密码
+**How to Get Gmail App Password**:
+1. Log in to Google account
+2. Enable two-factor authentication
+3. Visit [App Passwords](https://myaccount.google.com/apppasswords)
+4. Generate app-specific password
 
-### 4. 启动本地服务器
+### 4. Start Local Server
 
 ```bash
 npm run dev
-# 或
+# or
 npm start
 ```
 
-服务器将在 `http://localhost:3000` 启动：
+Server will start at `http://localhost:3000`:
 
-- **订阅页面**: http://localhost:3000/
-- **取消订阅页面**: http://localhost:3000/unsubscribe.html
-- **登录页面**: http://localhost:3000/login.html
-- **后台管理面板**: http://localhost:3000/admin.html（需要登录）
-- **健康检查**: http://localhost:3000/api/health
+- **Subscribe page**: http://localhost:3000/
+- **Unsubscribe page**: http://localhost:3000/unsubscribe.html
+- **Login page**: http://localhost:3000/login.html
+- **Admin dashboard**: http://localhost:3000/admin.html (requires login)
+- **Health check**: http://localhost:3000/api/health
 
-### 5. 生成新闻通讯
+### 5. Generate Newsletter
 
 ```bash
 python scripts/api.py
 ```
 
-这将生成 `newsletter-YYYY-MM-DD.html` 文件到 `output/` 目录。
+This will generate `newsletter-YYYY-MM-DD.html` file to `output/` directory.
 
-**周刊保存机制**:
-- 每期周刊自动保存到 `output/` 文件夹（用于日常使用，不提交到 Git）
-- 同时自动复制到 `archive/` 文件夹（用于 Git 提交，保存历史记录）
-- 文件名格式: `newsletter-YYYY-MM-DD.html`（例如：`newsletter-2025-01-15.html`）
-- `archive/` 文件夹中的文件会被提交到 Git，方便查看历史周刊
-- `output/` 文件夹在 `.gitignore` 中，不会被提交到 Git
+**Newsletter Archive Mechanism**:
+- Each newsletter is automatically saved to `output/` folder (for daily use, not committed to Git)
+- Simultaneously copied to `archive/` folder (for Git commit, preserving history)
+- Filename format: `newsletter-YYYY-MM-DD.html` (e.g., `newsletter-2025-01-15.html`)
+- Files in `archive/` folder will be committed to Git for easy viewing of historical newsletters
+- `output/` folder is in `.gitignore` and will not be committed to Git
 
-### 6. 发送新闻通讯
+### 6. Send Newsletter
 
 ```bash
-# 发送给 MongoDB 中的订阅者
+# Send to subscribers from MongoDB
 LATEST=$(ls -t output/newsletter-*.html | head -n 1)
 python scripts/send_email.py \
   --file "$LATEST" \
@@ -259,59 +259,59 @@ python scripts/send_email.py \
 
 ---
 
-## 🚢 部署指南
+## 🚢 Deployment Guide
 
-### Railway 部署
+### Railway Deployment
 
-项目已配置 Railway 部署，详细步骤请查看 [DEPLOYMENT.md](./DEPLOYMENT.md)
+The project is configured for Railway deployment. For detailed steps, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
-**快速部署步骤**:
+**Quick Deployment Steps**:
 
-1. **在 Railway 创建项目**
-   - 访问 [Railway](https://railway.app)
-   - 创建新项目并连接 GitHub 仓库
+1. **Create Railway Project**
+   - Visit [Railway](https://railway.app)
+   - Create new project and connect GitHub repository
 
-2. **配置环境变量**
-   - 在 Railway 项目设置中添加以下环境变量：
+2. **Configure Environment Variables**
+   - Add the following environment variables in Railway project settings:
      - `MONGODB_URI`
      - `MONGODB_DB`
      - `MONGODB_COLL`
      - `EMAIL_USER`
      - `EMAIL_PASS`
-     - `TECHSUM_API_KEY`（可选）
-     - `ADMIN_USERNAME`（管理员用户名，建议设置）
-     - `ADMIN_PASSWORD`（管理员密码，**必须设置强密码**）
-     - `SESSION_SECRET`（Session 密钥，建议设置随机字符串）
+     - `TECHSUM_API_KEY` (optional)
+     - `ADMIN_USERNAME` (admin username, recommended to set)
+     - `ADMIN_PASSWORD` (admin password, **must set strong password**)
+     - `SESSION_SECRET` (session secret key, recommended to set random string)
 
-3. **自动部署**
-   - Railway 会自动检测 `railway.json` 和 `Procfile`
-   - 部署完成后获取部署 URL
+3. **Auto Deployment**
+   - Railway will automatically detect `railway.json` and `Procfile`
+   - Get deployment URL after deployment completes
 
-4. **测试部署**
-   - 访问部署 URL 测试各个页面
-   - 检查 API 端点是否正常工作
+4. **Test Deployment**
+   - Visit deployment URL to test all pages
+   - Check if API endpoints are working properly
 
-**部署文件说明**:
-- `Procfile`: 定义 Railway 启动命令
-- `railway.json`: Railway 构建配置
+**Deployment Files**:
+- `Procfile`: Defines Railway startup command
+- `railway.json`: Railway build configuration
 
 ---
 
-## 📡 API 文档
+## 📡 API Documentation
 
-### 订阅 API
+### Subscribe API
 
-**端点**: `POST /api/subscribe`
+**Endpoint**: `POST /api/subscribe`
 
-**请求体**:
+**Request Body**:
 ```json
 {
   "email": "user@example.com",
-  "tags": ["preview"]  // 可选
+  "tags": ["preview"]  // optional
 }
 ```
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -319,22 +319,22 @@ python scripts/send_email.py \
 }
 ```
 
-**注意**: 订阅成功后，系统会自动发送欢迎确认邮件给新订阅者。
+**Note**: After successful subscription, the system automatically sends a welcome confirmation email to new subscribers.
 
 ---
 
-### 取消订阅 API
+### Unsubscribe API
 
-**端点**: `POST /api/unsubscribe`
+**Endpoint**: `POST /api/unsubscribe`
 
-**请求体**:
+**Request Body**:
 ```json
 {
   "email": "user@example.com"
 }
 ```
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -344,11 +344,11 @@ python scripts/send_email.py \
 
 ---
 
-### 统计 API
+### Statistics API
 
-**端点**: `GET /api/stats`
+**Endpoint**: `GET /api/stats`
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -369,19 +369,19 @@ python scripts/send_email.py \
 
 ---
 
-### 更新标签 API
+### Update Tags API
 
-**端点**: `PATCH /api/subscribers/:email/tags`
+**Endpoint**: `PATCH /api/subscribers/:email/tags`
 
-**请求体**:
+**Request Body**:
 ```json
 {
   "tag": "preview",
-  "add": true  // true 添加，false 删除
+  "add": true  // true to add, false to remove
 }
 ```
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -391,11 +391,11 @@ python scripts/send_email.py \
 
 ---
 
-### 删除订阅者 API
+### Delete Subscriber API
 
-**端点**: `DELETE /api/subscribers/:email`
+**Endpoint**: `DELETE /api/subscribers/:email`
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -405,11 +405,11 @@ python scripts/send_email.py \
 
 ---
 
-### 登录 API
+### Login API
 
-**端点**: `POST /api/login`
+**Endpoint**: `POST /api/login`
 
-**请求体**:
+**Request Body**:
 ```json
 {
   "username": "admin",
@@ -417,7 +417,7 @@ python scripts/send_email.py \
 }
 ```
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -427,11 +427,11 @@ python scripts/send_email.py \
 
 ---
 
-### 登出 API
+### Logout API
 
-**端点**: `POST /api/logout`
+**Endpoint**: `POST /api/logout`
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -441,11 +441,11 @@ python scripts/send_email.py \
 
 ---
 
-### 认证检查 API
+### Authentication Check API
 
-**端点**: `GET /api/auth/check`
+**Endpoint**: `GET /api/auth/check`
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -456,11 +456,11 @@ python scripts/send_email.py \
 
 ---
 
-### 健康检查 API
+### Health Check API
 
-**端点**: `GET /api/health`
+**Endpoint**: `GET /api/health`
 
-**响应**:
+**Response**:
 ```json
 {
   "ok": true,
@@ -470,78 +470,79 @@ python scripts/send_email.py \
 
 ---
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 Techsum-newsletter/
-├── api/                    # API 端点
-│   ├── subscribe.js        # 订阅 API
-│   └── unsubscribe.js      # 取消订阅 API
-├── config/                 # 配置文件
-│   └── categories.json     # 新闻分类配置
-├── docs/                   # 前端页面
-│   ├── index.html          # 订阅页面
-│   ├── unsubscribe.html    # 取消订阅页面
-│   └── admin.html          # 后台管理面板
-├── lib/                    # 工具库
-│   ├── mongo.js            # MongoDB 连接工具
-│   └── email.js            # 邮件发送工具
-├── archive/                # 历史周刊存档（提交到 Git）
-│   ├── README.md           # 存档说明
-│   └── newsletter-*.html   # 历史周刊文件
-├── output/                 # 生成的新闻通讯 HTML（不提交到 Git）
+├── api/                    # API endpoints
+│   ├── subscribe.js        # Subscribe API
+│   └── unsubscribe.js      # Unsubscribe API
+├── config/                 # Configuration files
+│   └── categories.json     # News category configuration
+├── docs/                   # Frontend pages
+│   ├── index.html          # Subscribe page
+│   ├── unsubscribe.html    # Unsubscribe page
+│   ├── login.html          # Login page
+│   └── admin.html          # Admin dashboard
+├── lib/                    # Utility libraries
+│   ├── mongo.js            # MongoDB connection utility
+│   └── email.js            # Email sending utility
+├── archive/                # Newsletter archive (committed to Git)
+│   ├── README.md           # Archive documentation
+│   └── newsletter-*.html   # Historical newsletter files
+├── output/                 # Generated newsletter HTML (not committed to Git)
 │   └── newsletter-*.html
-├── scripts/                # Python 脚本
-│   ├── api.py              # 新闻通讯 HTML 生成
-│   ├── send_email.py       # 批量邮件发送
-│   ├── subscribers.py      # 订阅者管理 CLI
-│   └── requirements.txt    # Python 依赖
-├── src/                    # 资源文件
-│   ├── newsletter_template.html  # 新闻通讯模板
-│   ├── confirmation_email_template.html  # 订阅确认邮件模板
+├── scripts/                # Python scripts
+│   ├── api.py              # Newsletter HTML generation
+│   ├── send_email.py       # Batch email sending
+│   ├── subscribers.py      # Subscriber management CLI
+│   └── requirements.txt    # Python dependencies
+├── src/                    # Resource files
+│   ├── newsletter_template.html  # Newsletter template
+│   ├── confirmation_email_template.html  # Subscription confirmation email template
 │   ├── turing_black_logo.png      # Logo
-│   └── utils.py            # Python 工具函数
-├── server.js               # Express 服务器（本地开发）
-├── package.json            # Node.js 依赖
-├── Procfile                # Railway 部署配置
-├── railway.json            # Railway 构建配置
-├── DEPLOYMENT.md           # 详细部署指南
-└── readme.md               # 本文件
+│   └── utils.py            # Python utility functions
+├── server.js               # Express server (local development)
+├── package.json            # Node.js dependencies
+├── Procfile                # Railway deployment configuration
+├── railway.json            # Railway build configuration
+├── DEPLOYMENT.md           # Detailed deployment guide
+└── readme.md               # This file
 ```
 
 ---
 
-## 🛠️ MongoDB 管理
+## 🛠️ MongoDB Management
 
-### 使用 Python CLI 管理订阅者
+### Using Python CLI to Manage Subscribers
 
 ```bash
-# 添加订阅者
+# Add subscriber
 python scripts/subscribers.py add \
   --email someone@example.com \
   --tags preview \
   --status active
 
-# 更新状态
+# Update status
 python scripts/subscribers.py set-status \
   --email someone@example.com \
   --status inactive
 
-# 添加标签
+# Add tags
 python scripts/subscribers.py add-tags \
   --email someone@example.com \
   --tags user
 
-# 删除标签
+# Remove tags
 python scripts/subscribers.py remove-tags \
   --email someone@example.com \
   --tags preview
 
-# 删除订阅者
+# Delete subscriber
 python scripts/subscribers.py remove \
   --email someone@example.com
 
-# 列出订阅者
+# List subscribers
 python scripts/subscribers.py list \
   --status active \
   --tags preview
@@ -549,52 +550,52 @@ python scripts/subscribers.py list \
 
 ---
 
-## 🎨 技术栈
+## 🎨 Tech Stack
 
-- **后端**: 
-  - Node.js (Express) - API 服务器
-  - MongoDB - 数据库
-- **前端**: 
-  - Vanilla HTML/CSS/JavaScript - 无框架，轻量级
-  - 响应式设计，支持移动端
-- **邮件**: 
-  - Gmail SMTP - 邮件发送
-- **新闻通讯生成**: 
-  - Python (requests, jinja2) - 内容抓取和模板渲染
-- **部署**: 
-  - Railway - 云平台部署
-
----
-
-## 📝 许可证
-
-私有项目 - 保留所有权利
+- **Backend**: 
+  - Node.js (Express) - API server
+  - MongoDB - Database
+- **Frontend**: 
+  - Vanilla HTML/CSS/JavaScript - Framework-free, lightweight
+  - Responsive design, mobile-friendly
+- **Email**: 
+  - Gmail SMTP - Email sending
+- **Newsletter Generation**: 
+  - Python (requests, jinja2) - Content fetching and template rendering
+- **Deployment**: 
+  - Railway - Cloud platform deployment
 
 ---
 
-## 🔗 相关链接
+## 📝 License
 
-- **网站**: [https://www.techsum.ai](https://www.techsum.ai)
-- **联系邮箱**: info@turingplanet.org
-- **部署地址**: [https://web-production-914f7.up.railway.app/](https://web-production-914f7.up.railway.app/)
+Private project - All rights reserved
 
 ---
 
-## 💡 使用提示
+## 🔗 Links
 
-1. **订阅者标签说明**:
-   - `preview`: 预览用户，用于测试邮件发送
-   - `user`: 正式用户
+- **Website**: [https://www.techsum.ai](https://www.techsum.ai)
+- **Contact Email**: info@turingplanet.org
+- **Deployment URL**: [https://web-production-914f7.up.railway.app/](https://web-production-914f7.up.railway.app/)
 
-2. **邮件发送建议**:
-   - 使用 `--batch-size` 控制批量大小，避免触发 Gmail 限制
-   - 使用 `--sleep` 设置发送间隔，避免频率限制
-   - 先发送给 `preview` 标签用户测试
+---
 
-3. **安全建议**:
-   - 不要将 `.env` 文件提交到 Git
-   - 使用 Gmail App Password 而非账户密码
-   - 定期更新依赖包
+## 💡 Tips
+
+1. **Subscriber Tag Notes**:
+   - `preview`: Preview users for testing email sending
+   - `user`: Regular users
+
+2. **Email Sending Recommendations**:
+   - Use `--batch-size` to control batch size, avoid triggering Gmail limits
+   - Use `--sleep` to set sending interval, avoid rate limiting
+   - Send to `preview` tagged users first for testing
+
+3. **Security Recommendations**:
+   - Do not commit `.env` file to Git
+   - Use Gmail App Password instead of account password
+   - Regularly update dependencies
 
 ---
 
