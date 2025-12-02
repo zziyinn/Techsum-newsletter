@@ -184,7 +184,10 @@
 </head>
 <body>
   <div class="container">
-    <h1>📊 Subscriber Management</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h1 style="margin: 0;">📊 Subscriber Management</h1>
+      <button class="btn secondary" onclick="logout()" style="margin: 0;">Logout</button>
+    </div>
     
     <div id="message"></div>
     
@@ -239,6 +242,38 @@
   // 使用相对路径，自动适配当前域名
   const API_BASE = '/api';
   let allSubscribers = [];
+
+  // 检查登录状态
+  async function checkAuth() {
+    try {
+      const res = await fetch(`${API_BASE}/auth/check`);
+      const data = await res.json();
+      if (!data.ok || !data.authenticated) {
+        window.location.href = '/login.html';
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error('Auth check failed:', err);
+      window.location.href = '/login.html';
+      return false;
+    }
+  }
+
+  // 登出
+  async function logout() {
+    if (!confirm('Are you sure you want to logout?')) return;
+    try {
+      const res = await fetch(`${API_BASE}/logout`, { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        window.location.href = '/login.html';
+      }
+    } catch (err) {
+      console.error('Logout failed:', err);
+      window.location.href = '/login.html';
+    }
+  }
 
   function showMessage(text, type = 'success') {
     const msgEl = document.getElementById('message');
@@ -407,11 +442,14 @@
     }
   }
 
-  // 初始加载
-  loadStats();
-  
-  // 自动刷新（每30秒）
-  setInterval(loadStats, 30000);
+  // 初始加载：先检查认证，再加载数据
+  checkAuth().then(authenticated => {
+    if (authenticated) {
+      loadStats();
+      // 自动刷新（每30秒）
+      setInterval(loadStats, 30000);
+    }
+  });
 </script>
 </body>
 </html>

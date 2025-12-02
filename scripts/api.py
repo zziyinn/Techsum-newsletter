@@ -328,6 +328,13 @@ def main():
     out_path = normalize_outfile(args.outfile)
     out_path.write_text(html, encoding="utf-8")
     print(f"✅ 已生成: {out_path}")
+    
+    # 同时复制到 archive/ 文件夹（用于 Git 提交）
+    archive_dir = ROOT_DIR / "archive"
+    archive_dir.mkdir(exist_ok=True)
+    archive_path = archive_dir / out_path.name
+    archive_path.write_text(html, encoding="utf-8")
+    print(f"📦 已归档: {archive_path}")
 
 if __name__ == "__main__":
     main()

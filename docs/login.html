@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TURING PLANET ✖️ TECHSUM — Admin Login</title>
+<meta name="color-scheme" content="light">
+<style>
+  :root{
+    --bg:#0b0d10;
+    --card:rgba(255,255,255,.08);
+    --card-border:rgba(255,255,255,.18);
+    --text:#e8eaed;
+    --muted:#9aa0a6;
+    --accent:#0ea5e9;
+    --accent-2:#22d3ee;
+    --ok:#10b981;
+    --err:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #0a1b2e 0%, transparent 60%),
+      radial-gradient(1200px 600px at 110% 10%, #05221f 0%, transparent 60%),
+      linear-gradient(180deg, #0b0d10 0%, #0f1115 100%);
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height:1.55;
+  }
+
+  .site{min-height:100vh;display:flex;flex-direction:column}
+  .main{flex:1;display:grid;place-items:center;padding:28px 16px 44px}
+  .wrap{max-width:480px;width:100%;padding:0 24px;margin:0 auto}
+
+  .brand{
+    display:flex;justify-content:center;align-items:center;gap:.75rem;
+    margin:-8px auto 32px;text-align:center;
+  }
+  .brand h1{
+    margin:0;font-size:36px;letter-spacing:.4px;
+    background:linear-gradient(90deg,#fff 0%,#d6f3ff 40%,#9ae6ff 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  .card{
+    backdrop-filter:saturate(140%) blur(14px);
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:20px;
+    padding:32px;
+    box-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+
+  .title{font-size:28px;font-weight:800;margin:0 0 8px;text-align:center}
+  .subtitle{color:var(--muted);font-size:16px;margin:0 0 24px;text-align:center}
+
+  .form{display:grid;grid-template-columns:1fr;gap:18px}
+  .row{display:grid;grid-template-columns:1fr;gap:8px}
+  label{font-size:14px;color:#cfd4da;font-weight:500}
+  .input{
+    width:100%;font-size:16px;padding:14px 16px;color:#e9eef4;
+    background:#0f1216;border:1px solid #2a2f36;border-radius:14px;outline:0;
+    transition:box-shadow .2s,border-color .2s;
+  }
+  .input:focus{
+    border-color:#2b8fff;box-shadow:0 0 0 3px rgba(14,165,233,.25)
+  }
+
+  .btn{
+    border:0;border-radius:14px;padding:14px 20px;font-size:16px;font-weight:700;
+    color:#021018;background:linear-gradient(90deg,var(--accent) 0%, var(--accent-2) 100%);
+    cursor:pointer;transition:transform .06s ease,opacity .2s;
+    box-shadow:0 10px 30px rgba(14,165,233,.35);width:100%;margin-top:8px;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn[disabled]{opacity:.6;cursor:not-allowed;box-shadow:none}
+
+  .status{margin-top:14px;font-size:14px;padding:12px 14px;border-radius:12px;display:none}
+  .status.ok{display:block;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.4);color:#b7ffd8}
+  .status.err{display:block;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.45);color:#ffc9c9}
+
+  .hint{margin-top:8px;color:var(--muted);font-size:13px;text-align:center}
+
+  @media(max-width:760px){
+    .brand h1{font-size:28px}
+    .card{padding:24px}
+  }
+</style>
+</head>
+<body>
+  <div class="site">
+    <main class="main">
+      <div class="wrap">
+        <div class="brand">
+          <h1>TURING PLANET ✖️ TECHSUM</h1>
+        </div>
+
+        <div class="card">
+          <h2 class="title">🔐 Admin Login</h2>
+          <p class="subtitle">Please enter your credentials to access the admin panel</p>
+
+          <form id="form" class="form" autocomplete="off" novalidate>
+            <div class="row">
+              <label for="username">Username</label>
+              <input id="username" class="input" type="text" placeholder="Enter username" required autocomplete="username" />
+            </div>
+
+            <div class="row">
+              <label for="password">Password</label>
+              <input id="password" class="input" type="password" placeholder="Enter password" required autocomplete="current-password" />
+            </div>
+
+            <button id="submit" class="btn" type="submit">Login</button>
+
+            <div id="status" class="status"></div>
+            <div class="hint">Access to admin panel requires authentication</div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script>
+  const API_ENDPOINT = "/api/login";
+
+  const form = document.getElementById('form');
+  const usernameI = document.getElementById('username');
+  const passwordI = document.getElementById('password');
+  const btn = document.getElementById('submit');
+  const status = document.getElementById('status');
+
+  function setStatus(type, msg){
+    status.className = 'status ' + type;
+    status.textContent = msg;
+    status.style.display = 'block';
+  }
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    status.style.display = 'none';
+
+    const username = usernameI.value.trim();
+    const password = passwordI.value;
+
+    if(!username || !password){
+      setStatus('err','Please enter both username and password.');
+      return;
+    }
+
+    btn.disabled = true; btn.textContent = 'Logging in…';
+    try{
+      const res = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ username, password })
+      });
+      
+      const data = await res.json();
+      
+      if(res.ok && data.ok){
+        // 登录成功，跳转到 admin 页面
+        window.location.href = '/admin.html';
+      }else{
+        setStatus('err', data.error || 'Login failed. Please check your credentials.');
+      }
+    }catch(err){
+      setStatus('err','Network error. Please try again.');
+    }finally{
+      btn.disabled = false; btn.textContent = 'Login';
+    }
+  });
+</script>
+</body>
+</html>
+

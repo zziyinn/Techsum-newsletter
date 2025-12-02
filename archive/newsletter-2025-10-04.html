@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tech Highlights (Top 10)</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f6f7f9; color: #222; line-height: 1.6; margin: 0; padding: 0; }
+    .container { max-width: 760px; margin: 32px auto; padding: 0 16px; }
+    
+    /* 顶部小链接 */
+    .masthead-toplink { font-size: 12px; margin-bottom: 6px; text-align: center; }
+    .masthead-toplink a { color: #6b7280; text-decoration: none; }
+    .masthead-toplink a:hover { text-decoration: underline; }
+    
+    /* Masthead */
+    .masthead { text-align: center; padding: 18px 0 14px; }
+    .masthead-logo { display: inline-block; width: 40px; height: 40px; margin: 8px 0 10px; border-radius: 8px; overflow: hidden; vertical-align: middle; }
+    .masthead-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .masthead-title { font-size: 26px; font-weight: 700; line-height: 1.25; margin: 0 0 7px; color: #111; }
+    .masthead-title a { color: #111; text-decoration: none; }
+    .masthead-title a:hover { color: #007aff; }
+
+    /* tagline + 日期 并列显示 */
+    .masthead-subtitle { font-size: 14px; font-weight: 500; color: #6b7280; margin: 0; }
+    .masthead-subtitle .sub-sep { display: none; }              /* 默认隐藏分隔点 */
+    .masthead-subtitle.has-date .sub-sep { display: inline; }   /* 有日期时显示分隔点 */
+
+    .masthead-divider { height: 1px; background: #e6e8eb; margin: 16px 0 0; }
+    @media (max-width: 640px) {
+      .masthead-logo { width: 36px; height: 36px; margin: 8px 0 8px; }
+      .masthead-title { font-size: 24px; margin-bottom: 6px; }
+      .masthead-subtitle { font-size: 13px; }
+    }
+
+    /* 下面保持你的原有样式（intro、grid、card、footer 等） */
+    .intro-section { margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+    .intro-text { font-size: 15px; line-height: 1.6; margin: 0; color: #333; font-weight: 400; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: #fff; border: 1px solid #e6e8eb; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; }
+    .thumb { position: relative; width: 100%; padding-top: 56.25%; background: #f0f2f5; overflow: hidden; }
+    .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .content { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .title { font-size: 16px; font-weight: 700; color: #111; text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+    .title:hover { color: #007aff; }
+    .meta { font-size: 12px; color: #6b7280; display: flex; gap: 10px; flex-wrap: wrap; }
+    .badge { background: #111; color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 6px; }
+    .summary { font-size: 14px; color: #333; line-height: 1.5; }
+    .expand-toggle { color: #007aff; font-size: 12px; cursor: pointer; margin-top: 4px; font-weight: 500; }
+    .expand-toggle:hover { text-decoration: underline; }
+    .outro-section { margin: 32px 0 24px 0; padding: 20px; background: #ffffff; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+    .outro-text { font-size: 15px; line-height: 1.6; color: #333; margin: 0; font-weight: 400; }
+    .outro-signature { margin-top: 12px; font-size: 14px; color: #666; font-style: italic; font-weight: 400; }
+    .unsubscribe-section { margin: 0 0 24px 0; padding: 20px; background: #ffffff; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+    .unsubscribe-text { font-size: 14px; color: #666; margin-bottom: 12px; line-height: 1.5; font-weight: 400; }
+    .unsubscribe-link { display: inline-block; padding: 10px 20px; background: #ff3b30; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: background-color 0.3s ease; }
+    .unsubscribe-link:hover { background: #d70015; }
+    .outro-signature {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .outro-signature a {
+      color: #007aff;
+      text-decoration: none;
+    }
+
+    .outro-signature a:hover {
+      text-decoration: underline;
+    }
+
+    .outro-disclaimer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+      line-height: 1.5;
+      border-top: 1px solid #eee;
+      padding-top: 12px;
+      font-style: italic;
+    }
+    .unsubscribe-info { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.5; font-weight: 400; }
+    .footer { text-align: center; color: #8a8f98; font-size: 12px; padding: 24px 0; }
+    a { color: inherit; }
+  </style>
+</head>
+<body>
+<div class="container">
+  
+<header class="masthead">  <!-- 顶部 View in browser -->
+  <div class="masthead-toplink">
+    <a href="https://www.techsum.ai" target="_blank" rel="noopener">View in browser ｜ https://www.techsum.ai</a>
+  </div>
+
+  <!-- 横向分割线 + Masthead 样式 -->
+  <div class="masthead-rail">
+    <span class="masthead-logo">
+        <img
+          src="../src/turing_black_logo.png"
+          alt="Turing Planet logo"
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+          onerror="this.closest('.masthead-logo') && this.closest('.masthead-logo').remove()">
+      </a>
+    </span>
+
+    <h1 class="masthead-title">
+      <a href="https://turingplanet.org" target="_blank" rel="noopener">TURING PLANET</a>
+      ✦
+      <a href="https://www.techsum.ai/" target="_blank" rel="noopener">TECHSUM</a>
+    </h1>
+  </div>
+
+  <!-- tagline + 日期 -->
+  <p class="masthead-subtitle">
+    <span class="sub-tagline">Weekly Tech Brief</span>
+    <span class="sub-sep"> · </span>
+    <span class="sub-date" data-autodate="0">2025-10-04</span>
+  </p>
+</header>
+
+  <!-- 引言 -->
+  <div class="intro-section">
+    <p class="intro-text">🚀 这一周，科技世界依旧没有停下脚步。💻 AI、芯片、互联网、医疗科技……都在以不同方式改变着我们的生活。✨ 希望这一期的 TechSum，能带你用几分钟时间， 快速捕捉本周最值得关注的科技脉动。</p>
+  </div>
+
+  <!-- 内容区域 -->
+  <div class="grid">
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://www.theverge.com/tech/787984/kindle-scribe-colorsoft-hands-on-amazon" target="_blank" rel="noopener">
+          <img 
+            src="https://gizmodo.com/app/uploads/2025/09/Amazon-Fire-Echo-Ring-Scribe-Device-Launch-02.jpg" 
+            alt="Amazon Revolutionizes Reading with New Color and AI-Enhanced Kindle Scribes" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://www.theverge.com/tech/787984/kindle-scribe-colorsoft-hands-on-amazon" target="_blank" rel="noopener">Amazon Revolutionizes Reading with New Color and AI-Enhanced Kindle Scribes</a>
+        <div class="meta">
+          <span>2025-09-30</span>
+          <span class="badge">热度 6</span>
+        </div>
+        
+        <div class="summary" data-original="Amazon introduced new Kindle Scribe models, including the Kindle Scribe Colorsoft with a color screen, during a fall event on September 30, set to be available later this year." data-truncated="true">
+          Amazon introduced new Kindle Scribe models, including the Kindle Scribe Colorsoft with a color screen, during a fall event on September 30, set to be available later this year.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://www.theverge.com/news/790419/perplexity-comet-available-everyone-free" target="_blank" rel="noopener">
+          <img 
+            src="https://i.pcmag.com/imagery/articles/04L8Bw22elOw9KRi6zgMP2g-1..v1759489156.jpg" 
+            alt="Introducing Comet: Perplexity&#39;s Free AI Browser for All" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://www.theverge.com/news/790419/perplexity-comet-available-everyone-free" target="_blank" rel="noopener">Introducing Comet: Perplexity's Free AI Browser for All</a>
+        <div class="meta">
+          <span>2025-10-02</span>
+          <span class="badge">热度 5</span>
+        </div>
+        
+        <div class="summary" data-original="Perplexity has launched its AI browser, Comet, for free global access after initially offering it to selected subscribers in July 2023." data-truncated="true">
+          Perplexity has launched its AI browser, Comet, for free global access after initially offering it to selected subscribers in July 2023.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://techcrunch.com/2025/10/01/meta-plans-to-sell-targeted-ads-based-on-data-in-your-ai-chats/" target="_blank" rel="noopener">
+          <img 
+            src="https://akm-img-a-in.tosshub.com/businesstoday/images/story/202510/68df5341ce320-meta-ai-033819962-16x9.jpg?size=948:533" 
+            alt="Meta Set to Leverage AI Chat Data for Targeted Ads in New Policy" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://techcrunch.com/2025/10/01/meta-plans-to-sell-targeted-ads-based-on-data-in-your-ai-chats/" target="_blank" rel="noopener">Meta Set to Leverage AI Chat Data for Targeted Ads in New Policy</a>
+        <div class="meta">
+          <span>2025-10-01</span>
+          <span class="badge">热度 4</span>
+        </div>
+        
+        <div class="summary" data-original="Meta announced plans to utilize data from user interactions with its AI products to sell targeted ads on its platforms beginning December 16, 2023, excluding users in South Korea, the UK, and the EU." data-truncated="true">
+          Meta announced plans to utilize data from user interactions with its AI products to sell targeted ads on its platforms beginning December 16, 2023, excluding users in South Korea, the UK, and the EU.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://techcrunch.com/2025/09/29/california-governor-newsom-signs-landmark-ai-safety-bill-sb-53/" target="_blank" rel="noopener">
+          <img 
+            src="https://cloudfront-us-east-2.images.arcpublishing.com/reuters/EJHQQOQGRNJ5NFNGMHH4IOFVQQ.jpg" 
+            alt="California Introduces Groundbreaking AI Safety Legislation" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://techcrunch.com/2025/09/29/california-governor-newsom-signs-landmark-ai-safety-bill-sb-53/" target="_blank" rel="noopener">California Introduces Groundbreaking AI Safety Legislation</a>
+        <div class="meta">
+          <span>2025-09-29</span>
+          <span class="badge">热度 4</span>
+        </div>
+        
+        <div class="summary" data-original="California Governor Gavin Newsom signed SB 53 into law on September 29, 2025, making California the first state to enact AI transparency legislation, requiring large AI companies to disclose safety testing practices." data-truncated="true">
+          California Governor Gavin Newsom signed SB 53 into law on September 29, 2025, making California the first state to enact AI transparency legislation, requiring large AI companies to disclose safety testing practices.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://www.theverge.com/news/791170/iceblock-app-store-removed-by-apple" target="_blank" rel="noopener">
+          <img 
+            src="https://lookaside.instagram.com/seo/google_widget/crawler/?media_id=3735264168808024907" 
+            alt="Apple Pulls Controversial ICEBlock App Following Government Demand" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://www.theverge.com/news/791170/iceblock-app-store-removed-by-apple" target="_blank" rel="noopener">Apple Pulls Controversial ICEBlock App Following Government Demand</a>
+        <div class="meta">
+          <span>2025-10-02</span>
+          <span class="badge">热度 3</span>
+        </div>
+        
+        <div class="summary" data-original="Apple has removed the ICEBlock app, which allowed users to report sightings of ICE agents, following demands from the Trump administration due to safety concerns for federal workers." data-truncated="true">
+          Apple has removed the ICEBlock app, which allowed users to report sightings of ICE agents, following demands from the Trump administration due to safety concerns for federal workers.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://www.theverge.com/news/790922/strava-garmin-patent-infringement-lawsuit" target="_blank" rel="noopener">
+          <img 
+            src="https://velo.outsideonline.com/wp-content/uploads/2025/10/DSC_2154-Edit.jpg?auto=webp&width=3840&quality=75&fit=cover" 
+            alt="Strava and Garmin Clash in Court Over Tracking Patents" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://www.theverge.com/news/790922/strava-garmin-patent-infringement-lawsuit" target="_blank" rel="noopener">Strava and Garmin Clash in Court Over Tracking Patents</a>
+        <div class="meta">
+          <span>2025-10-02</span>
+          <span class="badge">热度 3</span>
+        </div>
+        
+        <div class="summary" data-original="Strava has filed a lawsuit against Garmin in the US District Court of Colorado on September 30, alleging patent infringement on segments and heatmap features." data-truncated="true">
+          Strava has filed a lawsuit against Garmin in the US District Court of Colorado on September 30, alleging patent infringement on segments and heatmap features.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://techcrunch.com/2025/10/01/oura-launches-ring-4-ceramic-collection-new-charging-case/" target="_blank" rel="noopener">
+          <img 
+            src="https://media.wired.com/photos/68dc7d5ade28a309770cae00/master/w_1600%2Cc_limit/OR4C_Midnight.jpg" 
+            alt="Oura Unveils Stylish Ceramic Smart Rings Featuring Advanced Health Metrics" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://techcrunch.com/2025/10/01/oura-launches-ring-4-ceramic-collection-new-charging-case/" target="_blank" rel="noopener">Oura Unveils Stylish Ceramic Smart Rings Featuring Advanced Health Metrics</a>
+        <div class="meta">
+          <span>2025-10-01</span>
+          <span class="badge">热度 3</span>
+        </div>
+        
+        <div class="summary" data-original="Oura announced the release of its Ring 4 Ceramic collection and a new charging case on Wednesday, enhancing its smart ring offerings with improved health tracking features." data-truncated="true">
+          Oura announced the release of its Ring 4 Ceramic collection and a new charging case on Wednesday, enhancing its smart ring offerings with improved health tracking features.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="http://www.techmeme.com/250930/p44#a250930p44" target="_blank" rel="noopener">
+          <img 
+            src="https://www.lawcommentary.com/img/articles/2Zw3Plp9fgee3jDWD3NgwEvUoYNWkWUZqOJyyAb8.jpg?fit=crop&h=630&w=1200&signature=6dfbecfc85f0dbeb4d9fd7eab684a68a88040982cf55e2c8670e0c76e59fb7c8" 
+            alt="FTC Targets Zillow and Redfin in Antitrust Showdown" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="http://www.techmeme.com/250930/p44#a250930p44" target="_blank" rel="noopener">FTC Targets Zillow and Redfin in Antitrust Showdown</a>
+        <div class="meta">
+          <span>2025-09-30</span>
+          <span class="badge">热度 3</span>
+        </div>
+        
+        <div class="summary" data-original="The Federal Trade Commission (FTC) is suing Zillow and Redfin, claiming they violated antitrust laws by agreeing to limit competition in online rental listings with a $100 million payment from Zillow to Redfin." data-truncated="true">
+          The Federal Trade Commission (FTC) is suing Zillow and Redfin, claiming they violated antitrust laws by agreeing to limit competition in online rental listings with a $100 million payment from Zillow to Redfin.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://www.theverge.com/news/786455/amazon-fall-hardware-event-2025-what-to-expect-alexa-echo-kindle" target="_blank" rel="noopener">
+          <img 
+            src="https://s.yimg.com/ny/api/res/1.2/pTh2WYJyBYtKwd2gOkPJNQ--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyNDI7aD02OTk-/https://s.yimg.com/uu/api/res/1.2/wNKWNZlhgn5b..YQEDR3zA--~B/aD0xODAwO3c9MzIwMDthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/everything_announced.jpg" 
+            alt="Amazon Debuts Cutting-Edge Devices at 2025 Fall Hardware Showcase" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://www.theverge.com/news/786455/amazon-fall-hardware-event-2025-what-to-expect-alexa-echo-kindle" target="_blank" rel="noopener">Amazon Debuts Cutting-Edge Devices at 2025 Fall Hardware Showcase</a>
+        <div class="meta">
+          <span>2025-09-27</span>
+          <span class="badge">热度 3</span>
+        </div>
+        
+        <div class="summary" data-original="Amazon announced upgraded Echo devices, new Kindle Scribes, and Fire TV products on October 3, 2023, at its fall hardware event in New York City." data-truncated="true">
+          Amazon announced upgraded Echo devices, new Kindle Scribes, and Fire TV products on October 3, 2023, at its fall hardware event in New York City.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+    <article class="card">
+      
+      <div class="thumb">
+        <a href="https://www.theverge.com/news/791327/tesla-cybertruck-faulty-door-handles-wrongful-death-lawsuit" target="_blank" rel="noopener">
+          <img 
+            src="https://electrek.co/wp-content/uploads/sites/3/2025/10/Screenshot-2025-10-03-at-12.40.15-PM.jpg?quality=82&strip=all&w=1600" 
+            alt="Tesla Faces Legal Heat Over Fatal Cybertruck Door Malfunction" 
+            loading="lazy" 
+            decoding="async" 
+            referrerpolicy="no-referrer"
+            onerror="this.closest('.thumb') && this.closest('.thumb').remove()">
+        </a>
+      </div>
+      
+      <div class="content">
+        <a class="title" href="https://www.theverge.com/news/791327/tesla-cybertruck-faulty-door-handles-wrongful-death-lawsuit" target="_blank" rel="noopener">Tesla Faces Legal Heat Over Fatal Cybertruck Door Malfunction</a>
+        <div class="meta">
+          <span>2025-10-03</span>
+          <span class="badge">热度 2</span>
+        </div>
+        
+        <div class="summary" data-original="The family of 19-year-old Krysta Tsukahara has filed a wrongful death lawsuit against Tesla after she died in a crash involving a Cybertruck in Piedmont, California, on November 27, 2024." data-truncated="true">
+          The family of 19-year-old Krysta Tsukahara has filed a wrongful death lawsuit against Tesla after she died in a crash involving a Cybertruck in Piedmont, California, on November 27, 2024.
+        </div>
+        
+        
+      </div>
+    </article>
+    
+  </div>
+
+  <!-- 结尾 -->
+<section class="outro-section">
+  <p class="outro-text">🙏 谢谢你读到这里。</p>
+  <p class="outro-text">🌊 愿每一个关心科技的人，都能在这场浪潮中找到属于自己的位置。</p>
+  <p class="outro-text">👋 我们下周见。祝一切顺利！</p>
+
+  <div class="outro-signature">
+    <p><strong>TECHSUM TEAM</strong></p>
+    <p>📧 Email: <a href="mailto:info@turingplanet.org">info@turingplanet.org</a></p>
+    <p>🌐 Website: <a href="https://www.techsum.ai/" target="_blank" rel="noopener">techsum.ai</a></p>
+  </div>
+
+  <div class="outro-disclaimer">
+    <p>
+      本电子邮件中传输的信息仅供收件人或实体使用，其中可能包含机密和/或保密材料；
+      禁止收件人或实体以外的任何个人或实体查阅、转发、传播或以其他方式使用这些信息，
+      或根据这些信息采取任何行动。如果您收到的这封电子邮件有误，请联系发件人并从所有计算机中删除该资料。
+    </p>
+  </div>
+</section>
+
+  <div class="unsubscribe-section">
+    <div class="unsubscribe-text">如果您不想再接收我们的邮件，可以点击下方链接退订</div>
+    <a href="#" class="unsubscribe-link" onclick="handleUnsubscribe(event)">退订邮件</a>
+    <div class="unsubscribe-info">退订后将不再收到我们的邮件，您也可以随时重新订阅</div>
+  </div>
+
+  <div class="footer">© 2025 TechSum Newsletter</div>
+</div>
+
+<script>
+function handleUnsubscribe(event) {
+  event.preventDefault();
+  const confirmed = confirm('确定要退订吗？退订后将不再收到我们的邮件。');
+  if (confirmed) {
+    alert('退订功能需要配置退订URL。请联系管理员。');
+  }
+}
+
+function toggleSummary(toggleElement) {
+  const summaryElement = toggleElement.previousElementSibling;
+  const isExpanded = summaryElement.getAttribute('data-truncated') === 'false';
+  
+  if (isExpanded) {
+    const originalText = summaryElement.getAttribute('data-original');
+    const truncatedText = originalText.substring(0, 150) + (originalText.length > 150 ? '...' : '');
+    summaryElement.textContent = truncatedText;
+    summaryElement.setAttribute('data-truncated', 'true');
+    toggleElement.textContent = '展开';
+  } else {
+    const originalText = summaryElement.getAttribute('data-original');
+    summaryElement.textContent = originalText;
+    summaryElement.setAttribute('data-truncated', 'false');
+    toggleElement.textContent = '收起';
+  }
+}
+
+/* 自动补全日期 & 控制分隔点展示
+   - 如果 data-autodate="1"（模板未传 date），则生成今天 YYYY-MM-DD
+   - 若最终 sub-date 为空，则不显示分隔点
+*/
+(function() {
+  const subtitle = document.querySelector('.masthead-subtitle');
+  const dateEl = document.querySelector('.masthead-subtitle .sub-date');
+
+  if (dateEl && dateEl.getAttribute('data-autodate') === '1') {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    dateEl.textContent = `${y}-${m}-${d}`;
+  }
+
+  if (subtitle && dateEl && dateEl.textContent.trim()) {
+    subtitle.classList.add('has-date');
+  }
+})();
+</script>
+</body>
+</html>

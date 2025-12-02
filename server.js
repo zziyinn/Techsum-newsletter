@@ -8,6 +8,7 @@
  */
 
 import express from 'express';
+import session from 'express-session';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import subscribeHandler from './api/subscribe.js';
@@ -19,9 +20,78 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Session 配置
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'techsum-admin-secret-key-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // 生产环境使用 HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 小时
+  }
+}));
+
 // 中间件
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// 认证中间件
+function requireAuth(req, res, next) {
+  if (req.session && req.session.authenticated) {
+    return next();
+  }
+  res.status(401).json({ ok: false, error: 'Authentication required' });
+}
+
+// 登录 API（不需要认证）
+app.post('/api/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    // 从环境变量获取管理员凭据
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    
+    if (username === adminUsername && password === adminPassword) {
+      req.session.authenticated = true;
+      req.session.username = username;
+      res.json({ ok: true, message: 'Login successful' });
+    } else {
+      res.status(401).json({ ok: false, error: 'Invalid username or password' });
+    }
+  } catch (err) {
+    console.error('[login] error:', err);
+    res.status(500).json({ ok: false, error: 'Server error' });
+  }
+});
+
+// 登出 API
+app.post('/api/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ ok: false, error: 'Logout failed' });
+    }
+    res.json({ ok: true, message: 'Logged out successfully' });
+  });
+});
+
+// 检查认证状态 API
+app.get('/api/auth/check', (req, res) => {
+  res.json({ 
+    ok: true, 
+    authenticated: !!req.session.authenticated,
+    username: req.session.username || null
+  });
+});
+
+// 保护 admin 页面（在静态文件服务之前）
+app.get('/admin.html', (req, res, next) => {
+  if (!req.session || !req.session.authenticated) {
+    return res.redirect('/login.html');
+  }
+  next();
+});
 
 // 静态文件服务（docs目录）
 app.use(express.static(join(__dirname, 'docs')));
@@ -66,8 +136,8 @@ app.get('/api/health', (req, res) => {
   res.json({ ok: true, timestamp: new Date().toISOString() });
 });
 
-// 订阅者统计（用于调试）
-app.get('/api/stats', async (req, res) => {
+// 订阅者统计（需要认证）
+app.get('/api/stats', requireAuth, async (req, res) => {
   try {
     const { getCollection } = await import('./lib/mongo.js');
     const coll = await getCollection();
@@ -103,8 +173,8 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
-// 更新订阅者标签
-app.patch('/api/subscribers/:email/tags', async (req, res) => {
+// 更新订阅者标签（需要认证）
+app.patch('/api/subscribers/:email/tags', requireAuth, async (req, res) => {
   try {
     const { getCollection } = await import('./lib/mongo.js');
     const coll = await getCollection();
@@ -148,8 +218,8 @@ app.patch('/api/subscribers/:email/tags', async (req, res) => {
   }
 });
 
-// 删除订阅者
-app.delete('/api/subscribers/:email', async (req, res) => {
+// 删除订阅者（需要认证）
+app.delete('/api/subscribers/:email', requireAuth, async (req, res) => {
   try {
     const { getCollection } = await import('./lib/mongo.js');
     const coll = await getCollection();
@@ -174,6 +244,7 @@ app.delete('/api/subscribers/:email', async (req, res) => {
   }
 });
 
+
 // 根路径重定向到订阅页
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'docs', 'index.html'));
@@ -183,7 +254,8 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
   console.log(`📄 Subscribe page: http://localhost:${PORT}/`);
   console.log(`📋 Unsubscribe page: http://localhost:${PORT}/unsubscribe.html`);
-  console.log(`⚙️  Admin page: http://localhost:${PORT}/admin.html`);
+  console.log(`🔐 Login page: http://localhost:${PORT}/login.html`);
+  console.log(`⚙️  Admin page: http://localhost:${PORT}/admin.html (requires login)`);
   console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
 });
 

@@ -4,3 +4,4 @@ node_modules/
 *.log
 .DS_Store
 output/
+# archive/ 文件夹会被提交到 Git，用于保存历史周刊

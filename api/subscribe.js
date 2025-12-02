@@ -53,6 +53,12 @@ export default async (req, res) => {
 
     console.log('[subscribe] upsert result:', r);
 
+    // 发送确认邮件（异步，不阻塞响应）
+    const { sendConfirmationEmail } = await import('../lib/email.js');
+    sendConfirmationEmail(email).catch(err => {
+      console.error('[subscribe] Failed to send confirmation email:', err);
+    });
+
     return res.status(200).json({ ok: true, email });
   } catch (err) {
     console.error('[subscribe] error:', err);
